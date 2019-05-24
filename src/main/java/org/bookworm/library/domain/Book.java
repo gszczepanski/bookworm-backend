@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Grzegorz on 2019/05/13
@@ -60,7 +61,6 @@ public class Book {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id", insertable = false, updatable = false)
-    @Getter @Setter
     private AcquiringMethod acquiringMethod;
 
     @NotNull
@@ -70,4 +70,8 @@ public class Book {
     private String invoiceSymbol;
 
     private BigDecimal price;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "book_id") }, inverseJoinColumns = { @JoinColumn(name = "author_id") })
+    private Set<Author> authors;
 }
