@@ -59,9 +59,9 @@ public class Book {
     @Temporal(TemporalType.DATE)
     private Date acquireDate;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="id", insertable = false, updatable = false)
-    private AcquiringMethod acquiringMethod;
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
+    private BookAcquiringMethod acquiringMethod;
 
     @NotNull
     private Integer acquiringEmployeerId;
@@ -74,4 +74,8 @@ public class Book {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "book_id") }, inverseJoinColumns = { @JoinColumn(name = "author_id") })
     private Set<Author> authors;
+
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
+    private BookStatus status;
 }
