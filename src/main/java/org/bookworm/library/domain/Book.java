@@ -31,10 +31,6 @@ public class Book {
     @Size(max=255)
     private String title;
 
-    @NotNull
-    @Size(max=255)
-    private String publisherName;
-
     @Size(max=100)
     private String placeOfOrigin;
 
@@ -64,7 +60,7 @@ public class Book {
     private BookAcquiringMethod acquiringMethod;
 
     @NotNull
-    private Integer acquiringEmployeerId;
+    private Integer acquiringEmployeeId;
 
     @Size(max=20)
     private String invoiceSymbol;
@@ -78,4 +74,9 @@ public class Book {
     @Enumerated(EnumType.ORDINAL)
     @NotNull
     private BookStatus status;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name="publisher_id", insertable = false, updatable = false)
+    @NotNull
+    private Publisher publisher;
 }
