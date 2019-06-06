@@ -15,11 +15,7 @@ import java.time.Month;
 @ToString
 @Getter
 @Setter
-public class Periodical {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Periodical  extends EntityWithUUID {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name="name_id", insertable = false, updatable = false)

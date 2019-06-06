@@ -18,11 +18,7 @@ import java.util.Set;
 @ToString
 @Getter
 @Setter
-public class Book {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Book extends EntityWithUUID {
 
     @NotNull
     private Integer registryNumber;
