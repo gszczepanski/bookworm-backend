@@ -79,4 +79,8 @@ public class Book {
     @JoinColumn(name="publisher_id", insertable = false, updatable = false)
     @NotNull
     private Publisher publisher;
+
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
+    private Language language;
 }
