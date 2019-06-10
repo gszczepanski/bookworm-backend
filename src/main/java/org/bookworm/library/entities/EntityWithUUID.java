@@ -1,4 +1,4 @@
-package org.bookworm.library.domain;
+package org.bookworm.library.entities;
 
 import org.hibernate.annotations.Type;
 

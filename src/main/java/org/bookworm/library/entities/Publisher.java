@@ -1,4 +1,4 @@
-package org.bookworm.library.domain;
+package org.bookworm.library.entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @ToString
 @Getter
 @Setter
-public class PeriodicalName {
+public class Publisher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
