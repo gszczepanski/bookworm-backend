@@ -16,7 +16,7 @@ import java.util.Set;
 @ToString
 @Getter
 @Setter
-public class Author {
+public class BookAuthor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +38,6 @@ public class Author {
     @Size(max=1000)
     private String comment;
 
-    @ManyToMany(mappedBy="authors", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy="bookAuthors", fetch = FetchType.EAGER)
     private Set<Book> books;
 }
