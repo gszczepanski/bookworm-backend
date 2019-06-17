@@ -1,4 +1,4 @@
-package org.bookworm.library.repository;
+package org.bookworm.library.repositories;
 
 import org.bookworm.library.entities.Book;
 import org.bookworm.library.entities.BookStatus;
