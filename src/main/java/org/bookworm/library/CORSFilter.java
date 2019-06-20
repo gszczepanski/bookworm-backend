@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class SimpleCORSFilter implements Filter {
+public class CORSFilter implements Filter {
 
     @Autowired
     private Environment env;
