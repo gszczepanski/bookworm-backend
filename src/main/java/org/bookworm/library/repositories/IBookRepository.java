@@ -5,6 +5,8 @@ import org.bookworm.library.entities.BookStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
@@ -25,5 +27,7 @@ public interface IBookRepository extends JpaRepository<Book, UUID> {
 
     void deleteById(@NotNull UUID id);
 
+    @Modifying
+    @Query("update Book b set b.status = ?1 where b.id = ?2")
     void setStatus(@NotNull BookStatus status, @NotNull UUID id);
 }
