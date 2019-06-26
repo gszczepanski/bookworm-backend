@@ -65,7 +65,7 @@ public class Book extends EntityWithUUID {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "book_id") }, inverseJoinColumns = { @JoinColumn(name = "author_id") })
-    private Set<BookAuthor> bookAuthors;
+    private Set<Author> authors;
 
     @Enumerated(EnumType.ORDINAL)
     @NotNull
