@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface IPersonRepository extends JpaRepository<Person, UUID> {
+public interface PersonRepository extends JpaRepository<Person, UUID> {
 
     Page<Person> findAll(@NotNull Pageable pageable);
 

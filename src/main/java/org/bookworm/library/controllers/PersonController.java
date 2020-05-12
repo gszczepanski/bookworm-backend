@@ -2,7 +2,7 @@ package org.bookworm.library.controllers;
 
 import org.bookworm.library.entities.Person;
 import org.bookworm.library.entities.PersonType;
-import org.bookworm.library.repositories.IPersonRepository;
+import org.bookworm.library.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class PersonController {
 
     @Autowired
-    IPersonRepository personRepository;
+    PersonRepository personRepository;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
     @RequestMapping(value = "", method = RequestMethod.POST)

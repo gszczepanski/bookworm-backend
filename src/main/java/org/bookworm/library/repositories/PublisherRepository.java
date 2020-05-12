@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public interface IPublisherRepository extends JpaRepository<Publisher, Integer> {
+public interface PublisherRepository extends JpaRepository<Publisher, Integer> {
 
     Page<Publisher> findAll(@NotNull Pageable pageable);
 

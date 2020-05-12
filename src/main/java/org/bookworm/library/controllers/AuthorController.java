@@ -1,7 +1,7 @@
 package org.bookworm.library.controllers;
 
 import org.bookworm.library.entities.Author;
-import org.bookworm.library.repositories.IAuthorRepository;
+import org.bookworm.library.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class AuthorController {
 
     @Autowired
-    IAuthorRepository authorRepository;
+    AuthorRepository authorRepository;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
     @RequestMapping(value = "", method = RequestMethod.POST)

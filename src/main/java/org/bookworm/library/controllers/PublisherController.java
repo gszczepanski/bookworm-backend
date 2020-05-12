@@ -1,7 +1,7 @@
 package org.bookworm.library.controllers;
 
 import org.bookworm.library.entities.Publisher;
-import org.bookworm.library.repositories.IPublisherRepository;
+import org.bookworm.library.repositories.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import javax.transaction.Transactional;
 public class PublisherController {
 
     @Autowired
-    IPublisherRepository publisherRepository;
+    PublisherRepository publisherRepository;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
     @RequestMapping(value = "", method = RequestMethod.POST)

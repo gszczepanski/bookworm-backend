@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Created by Grzegorz on 2019/06/06
  */
-public interface IBookRepository extends JpaRepository<Book, UUID> {
+public interface BookRepository extends JpaRepository<Book, UUID> {
 
     Page<Book> findAll(@NotNull Pageable pageable);
 

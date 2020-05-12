@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface IAuthorRepository extends JpaRepository<Author, UUID> {
+public interface AuthorRepository extends JpaRepository<Author, UUID> {
 
     Page<Author> findAll(@NotNull Pageable pageable);
 

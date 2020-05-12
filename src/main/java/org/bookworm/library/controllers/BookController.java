@@ -2,7 +2,7 @@ package org.bookworm.library.controllers;
 
 import org.bookworm.library.entities.Book;
 import org.bookworm.library.entities.BookStatus;
-import org.bookworm.library.repositories.IBookRepository;
+import org.bookworm.library.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class BookController {
 
     @Autowired
-    IBookRepository bookRepository;
+    BookRepository bookRepository;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
     @RequestMapping(value = "", method = RequestMethod.POST)
