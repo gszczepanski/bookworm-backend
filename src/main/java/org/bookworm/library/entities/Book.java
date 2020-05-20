@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -48,8 +48,7 @@ public class Book extends EntityWithUUID {
 
     @NotNull
     @Column(insertable = false, updatable = false)
-    @Temporal(TemporalType.DATE)
-    private Date acquireDate;
+    private LocalDate acquireDate;
 
     @Enumerated(EnumType.ORDINAL)
     @NotNull
