@@ -1,8 +1,9 @@
 package org.bookworm.library.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.bookworm.library.dto.AuthorDto;
 import org.bookworm.library.entities.Author;
-import org.bookworm.library.repositories.AuthorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bookworm.library.services.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,39 +14,39 @@ import java.util.UUID;
 /**
  * Created by Grzegorz on 2019/06/20
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
 
-    @Autowired
-    AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Author insert(@RequestBody Author author) {
+    @PostMapping(value = "")
+    public Author insert(@RequestBody AuthorDto authorDto) {
 
-        return authorRepository.save(author);
+        return authorService.save(authorDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public Author update(@PathVariable(value = "id") UUID id, @RequestBody Author author) {
+    @PutMapping(value = "/{id}")
+    public Author update(@PathVariable(value = "id") UUID id, @RequestBody AuthorDto authorDto) {
 
-        return authorRepository.save(author);
+        return authorService.save(authorDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping(value = "")
     public Page<Author> findAll(Pageable pageable) {
 
-        return authorRepository.findAll(pageable);
+        return authorService.findAll(pageable);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteById(@PathVariable(value = "id") UUID id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable(value = "id") UUID id) {
 
-        authorRepository.deleteById(id);
+        authorService.deleteById(id);
         return ResponseEntity.ok("author deleted");
     }
 }

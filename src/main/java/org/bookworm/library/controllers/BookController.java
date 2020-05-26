@@ -1,9 +1,10 @@
 package org.bookworm.library.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.bookworm.library.dto.BookDto;
 import org.bookworm.library.entities.Book;
 import org.bookworm.library.entities.BookStatus;
-import org.bookworm.library.repositories.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bookworm.library.services.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,48 +15,48 @@ import java.util.UUID;
 /**
  * Created by Grzegorz on 2019/06/19
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/books")
 public class BookController {
 
-    @Autowired
-    BookRepository bookRepository;
+    private final BookService bookService;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Book insert(@RequestBody Book book) {
+    @PostMapping(value = "")
+    public Book insert(@RequestBody BookDto bookDto) {
 
-        return bookRepository.save(book);
+        return bookService.save(bookDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public Book update(@PathVariable(value = "id") UUID id, @RequestBody Book book) {
+    @PutMapping(value = "/{id}")
+    public Book update(@PathVariable(value = "id") UUID id, @RequestBody BookDto bookDto) {
 
-        return bookRepository.save(book);
+        return bookService.save(bookDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping(value = "")
     public Page<Book> findAll(Pageable pageable) {
 
-        return bookRepository.findAll(pageable);
+        return bookService.findAll(pageable);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteById(@PathVariable(value = "id") UUID id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable(value = "id") UUID id) {
 
-        bookRepository.deleteById(id);
+        bookService.deleteById(id);
         return ResponseEntity.ok("book deleted");
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}/status/{status}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> setStatus(@PathVariable(value = "status") BookStatus status,
+    @PatchMapping(value = "/{id}/status/{status}")
+    public ResponseEntity<String> setStatus(@PathVariable(value = "status") BookStatus status,
                                      @PathVariable(value = "id") UUID id) {
 
-        bookRepository.setStatus(status, id);
+        bookService.setStatus(status, id);
         return ResponseEntity.ok("book type updated");
     }
 }

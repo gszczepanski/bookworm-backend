@@ -1,8 +1,9 @@
 package org.bookworm.library.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.bookworm.library.dto.PublisherDto;
 import org.bookworm.library.entities.Publisher;
-import org.bookworm.library.repositories.PublisherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bookworm.library.services.PublisherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,40 +14,40 @@ import javax.transaction.Transactional;
 /**
  * Created by Grzegorz on 2019/06/20
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/publishers")
 public class PublisherController {
 
-    @Autowired
-    PublisherRepository publisherRepository;
+    private final PublisherService publisherService;
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Publisher insert(@RequestBody Publisher publisher) {
+    @PostMapping(value = "")
+    public Publisher insert(@RequestBody PublisherDto publisherDto) {
 
-        return publisherRepository.save(publisher);
+        return publisherService.save(publisherDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public Publisher update(@PathVariable(value = "id") Integer id, @RequestBody Publisher publisher) {
+    @PutMapping(value = "/{id}")
+    public Publisher update(@PathVariable(value = "id") Integer id, @RequestBody PublisherDto publisherDto) {
 
-        return publisherRepository.save(publisher);
+        return publisherService.save(publisherDto);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping(value = "")
     public Page<Publisher> findAll(Pageable pageable) {
 
-        return publisherRepository.findAll(pageable);
+        return publisherService.findAll(pageable);
     }
 
     @CrossOrigin(origins = "${ws.cross.origin.address}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     @Transactional
-    public ResponseEntity<?> deleteById(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<String> deleteById(@PathVariable(value = "id") Integer id) {
 
-        publisherRepository.deleteById(id);
+        publisherService.deleteById(id);
         return ResponseEntity.ok("publisher deleted");
     }
 }
