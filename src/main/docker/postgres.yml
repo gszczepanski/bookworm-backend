@@ -3,9 +3,9 @@ version: '3.1'
 
 services:
 
-  db:
+  postgres-library:
     image: postgres
-    restart: always
+    #    restart: always
     ports:
       - 5432:5432
     environment:
