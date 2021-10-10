@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CORSFilter implements Filter {
+public final class CORSFilter implements Filter {
 
     @Autowired
     private Environment env;
@@ -34,14 +34,10 @@ public class CORSFilter implements Filter {
                 "true");
         response.setHeader("Access-Control-Allow-Headers",
                 "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
-        if(request.getMethod().equals(HttpMethod.OPTIONS.name())){
+        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
-        }else{
+        } else {
             chain.doFilter(req, res);
         }
     }
-
-    public void init(FilterConfig filterConfig) {}
-
-    public void destroy() {}
 }
