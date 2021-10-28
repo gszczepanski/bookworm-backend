@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+
+  bookworm_postgres:
+    container_name: bookworm_postgres
+    build:
+      context: postgres_pl
+      dockerfile: Dockerfile
+    image: postgres_pl:latest
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bookworm_library
+      POSTGRES_USER: bookworm_user
+      POSTGRES_PASSWORD: xyzXYZxyz
+    networks:
+      - bookworm_backend
+
+  bookworm_backend:
+    container_name: bookworm_backend
+    depends_on:
+      - bookworm_postgres
+    build:
+      context: bookworm_backend
+      dockerfile: Dockerfile
+    image: bookworm_backend:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "8080:8080"
+    networks:
+      - bookworm_backend
+
+networks:
+  bookworm_backend:
+    driver: bridge
