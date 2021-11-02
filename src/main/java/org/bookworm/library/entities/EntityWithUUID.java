@@ -20,7 +20,7 @@ public abstract class EntityWithUUID {
     @Type(type = "pg-uuid")
     private UUID id;
 
-    public EntityWithUUID() {
+    protected EntityWithUUID() {
         this.id = UUID.randomUUID();
     }
 }
