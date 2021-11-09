@@ -40,6 +40,8 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.intuit.karate:karate-core:1.1.0'
+    testImplementation 'com.intuit.karate:karate-junit5:1.1.0'
 }
 
 bootJar {
