@@ -23,6 +23,7 @@ services:
     container_name: bookworm_backend
     depends_on:
       - bookworm_postgres
+    restart: on-failure
     build:
       context: bookworm_backend
       dockerfile: Dockerfile
