@@ -1,11 +1,12 @@
 //noinspection GroovyAssignabilityCheck
 
 plugins {
-    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'org.springframework.boot' version '2.3.12.RELEASE'
     id 'java'
     id 'war'
     id "org.sonarqube" version "2.7"
     id 'net.ltgt.apt' version '0.8'
+    id "org.liquibase.gradle" version "2.0.4"
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -31,12 +32,14 @@ dependencies {
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
-    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-    compileOnly 'org.projectlombok:lombok'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.liquibase:liquibase-core:4.6.1'
+    compileOnly 'org.liquibase:liquibase-gradle-plugin:2.0.4'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'org.postgresql:postgresql:42.3.1'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
