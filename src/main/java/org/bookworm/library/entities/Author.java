@@ -1,5 +1,6 @@
 package org.bookworm.library.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,10 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Grzegorz on 2019/05/22
@@ -16,11 +20,7 @@ import java.util.Set;
 @ToString
 @Getter
 @Setter
-public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Author extends EntityWithUUID {
 
     @NotNull
     @Size(max=50)
@@ -34,10 +34,34 @@ public class Author {
     @Size(max=150)
     private String displayName;
 
-    @NotNull
     @Size(max=1000)
     private String comment;
 
-    @ManyToMany(mappedBy="authors", fetch = FetchType.EAGER)
-    private Set<Book> books;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "author_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @JsonIgnore
+    private List<Book> books;
+
+    public Author() {
+        List books = new ArrayList<>();
+    }
+
+    /**
+     * Optionally force client classes through your add/remove methods if mutual
+     * relationship should be maintained.
+     */
+    public List<Book> getBooks() {
+        return Collections.unmodifiableList(books);
+    }
+
+    /**
+     * Ensures mutual relationship set correctly.
+     */
+    public void addBook(Book book) {
+        if (Objects.nonNull(book)) {
+            books.add(book);
+            book.getAuthors().add(this);
+        }
+    }
+
 }
