@@ -2,9 +2,9 @@ package org.bookworm.library.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bookworm.library.entities.Book;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Grzegorz on 2020/05/25
@@ -13,10 +13,10 @@ import java.util.Set;
 @Data
 public class AuthorDto {
 
-    private Integer id;
+    private UUID id;
     private String lastName;
     private String firstName;
     private String displayName;
     private String comment;
-    private Set<Book> books;
+    private Set<BookDto> books;
 }
