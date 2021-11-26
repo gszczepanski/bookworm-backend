@@ -27,11 +27,12 @@ public class BookDto {
     private String comment;
     private LocalDate acquireDate;
     private BookAcquiringMethod acquiringMethod;
-    private Integer acquiringEmployeeId;
+    private UUID acquiringEmployeeId;
     private String invoiceSymbol;
     private BigDecimal price;
-    private Set<Author> authors;
+    private Set<AuthorDto> authors;
     private BookStatus status;
-    private Publisher publisher;
+    private Integer publisherId;
+    private PublisherDto publisher;
     private Language language;
 }
