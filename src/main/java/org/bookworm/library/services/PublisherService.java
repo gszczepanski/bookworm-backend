@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Created by Grzegorz on 2020/05/25
  */
@@ -20,11 +22,15 @@ public class PublisherService {
     private final PublisherMapper publisherMapper;
 
     public Publisher save(PublisherDto publisherDto) {
-        return publisherRepository.save(publisherMapper.toPublisher(publisherDto));
+        return publisherRepository.saveAndFlush(publisherMapper.toPublisher(publisherDto));
     }
 
     public Page<Publisher> findAll(Pageable pageable) {
         return publisherRepository.findAll(pageable);
+    }
+
+    public Optional<Publisher> findById(Integer id) {
+        return publisherRepository.findById(id);
     }
 
     public void deleteById(Integer id) {
