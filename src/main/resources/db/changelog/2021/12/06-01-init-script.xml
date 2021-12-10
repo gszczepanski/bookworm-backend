@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd"
+		objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+	<changeSet id="1638816014130-1" author="grzegorz (generated)">
+		<createTable tableName="author">
+			<column name="id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_author"/>
+			</column>
+			<column name="last_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="first_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="display_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="comment" type="VARCHAR(255)"/>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-2" author="grzegorz (generated)">
+		<createTable tableName="book">
+			<column name="id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_book"/>
+			</column>
+			<column name="registry_number" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="title" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="place_of_origin" type="VARCHAR(255)"/>
+			<column name="year" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="volume" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column defaultValueBoolean="true" name="joint_publication" type="boolean">
+				<constraints nullable="false"/>
+			</column>
+			<column name="series_name" type="VARCHAR(255)"/>
+			<column name="comment" type="VARCHAR(255)"/>
+			<column name="acquire_date" type="DATE">
+				<constraints nullable="false"/>
+			</column>
+			<column name="acquiring_method" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="acquiring_employee_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+			<column name="invoice_symbol" type="VARCHAR(255)"/>
+			<column name="price" type="DECIMAL"/>
+			<column name="status" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="publisher_id" type="INT"/>
+			<column name="language" type="INT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-3" author="grzegorz (generated)">
+		<createTable tableName="book_author">
+			<column name="author_id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_book_author"/>
+			</column>
+			<column name="book_id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_book_author"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-4" author="grzegorz (generated)">
+		<createTable tableName="periodical">
+			<column name="id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_periodical"/>
+			</column>
+			<column name="name_id" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="number_or_volume" type="VARCHAR(255)"/>
+			<column name="month" type="INT"/>
+			<column name="year" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="publisher_id" type="INT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-5" author="grzegorz (generated)">
+		<createTable tableName="periodical_name">
+			<column autoIncrement="true" name="id" type="INT">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_periodicalname"/>
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-6" author="grzegorz (generated)">
+		<createTable tableName="person">
+			<column name="id" type="UUID">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+			</column>
+			<column name="last_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="middle_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="first_name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="id_card_number" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="id_card_type" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="type" type="INT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-7" author="grzegorz (generated)">
+		<createTable tableName="publisher">
+			<column autoIncrement="true" name="id" type="INT">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="pk_publisher"/>
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="1638816014130-8" author="grzegorz (generated)">
+		<addUniqueConstraint columnNames="name" constraintName="uc_periodicalname_name" tableName="periodical_name"/>
+	</changeSet>
+	<changeSet id="1638816014130-9" author="grzegorz (generated)">
+		<addUniqueConstraint columnNames="name" constraintName="uc_publisher_name" tableName="publisher"/>
+	</changeSet>
+	<changeSet id="1638816014130-10" author="grzegorz (generated)">
+		<addForeignKeyConstraint baseColumnNames="publisher_id" baseTableName="book"
+								 constraintName="FK_BOOK_ON_PUBLISHER" referencedColumnNames="id"
+								 referencedTableName="publisher"/>
+	</changeSet>
+	<changeSet id="1638816014130-11" author="grzegorz (generated)">
+		<addForeignKeyConstraint baseColumnNames="name_id" baseTableName="periodical"
+								 constraintName="FK_PERIODICAL_ON_NAME" referencedColumnNames="id"
+								 referencedTableName="periodical_name"/>
+	</changeSet>
+	<changeSet id="1638816014130-12" author="grzegorz (generated)">
+		<addForeignKeyConstraint baseColumnNames="publisher_id" baseTableName="periodical"
+								 constraintName="FK_PERIODICAL_ON_PUBLISHER" referencedColumnNames="id"
+								 referencedTableName="publisher"/>
+	</changeSet>
+	<changeSet id="1638816014130-13" author="grzegorz (generated)">
+		<addForeignKeyConstraint baseColumnNames="author_id" baseTableName="book_author"
+								 constraintName="fk_booaut_on_author" referencedColumnNames="id"
+								 referencedTableName="author"/>
+	</changeSet>
+	<changeSet id="1638816014130-14" author="grzegorz (generated)">
+		<addForeignKeyConstraint baseColumnNames="book_id" baseTableName="book_author"
+								 constraintName="fk_booaut_on_book" referencedColumnNames="id"
+								 referencedTableName="book"/>
+	</changeSet>
+
+</databaseChangeLog>
