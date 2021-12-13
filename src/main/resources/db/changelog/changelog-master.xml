@@ -6,7 +6,8 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <include file="2021/11/11-01-create-tables.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/2021/11/13-01-acquiring_employee_id.xml"/>
+    <include file="2021/12/06-01-init-script.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/2021/12/06-02-drop-table-periodical.xml"/>
+    <include file="db/changelog/2021/12/11-01-set-joint-publication-false.xml"/>
 
 </databaseChangeLog>
