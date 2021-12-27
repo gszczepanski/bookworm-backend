@@ -1,33 +1,33 @@
 Feature: person
 
   Background:
-    * url 'http://localhost:8080/persons'
+    * url personUrlBase
 
   Scenario: person endpoint test
 
-	* url 'http://localhost:9080/auth/realms/bookworm/protocol/openid-connect/token'
-	* form field grant_type = 'password'
-	* form field client_id = 'bookworm_client'
-	* form field client_secret = 'a0f7590c-a779-4695-95cc-9d608142864b'
-	* form field username = 'bookworm_john'
-	* form field password = 'password'
-	* method post
-	* status 200
-	* def accessToken = response.access_token
+    * url tokenUrlBase
+    * form field grant_type = grantType
+    * form field client_id = appId
+    * form field client_secret = appSecret
+    * form field username = testUserName
+    * form field password = testUserPassword
+    * method post
+    * status 200
+    * def accessToken = response.access_token
 
     #Add person should success
-    Given url 'http://localhost:8080/persons'
-	And request { lastName: 'Hood', middleName: 'John', firstName: 'Robin', idCardNumber: '1234567890', idCardType: 'NATIONAL_IDENTITY_CARD', type: 'CLIENT' }
-	And header Accept = 'application/json'
-	And header Authorization = 'Bearer ' + accessToken
+    Given url personUrlBase
+    And request { lastName: 'Hood', middleName: 'John', firstName: 'Robin', idCardNumber: '1234567890', idCardType: 'NATIONAL_IDENTITY_CARD', type: 'CLIENT' }
+    And header Accept = 'application/json'
+    And header Authorization = 'Bearer ' + accessToken
     And method POST
-    Then status 200
+    Then status 201
     And match response == { id: #notnull, lastName: 'Hood', middleName: 'John', firstName: 'Robin', idCardNumber: '1234567890', idCardType: #present, type: #present }
     And def personId = response.id
 
     #Select person should success
     Given path personId
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method GET
     Then status 200
     And match response == { id: #(personId), lastName: 'Hood', middleName: 'John', firstName: 'Robin', idCardNumber: '1234567890', idCardType: #present, type: #present }
@@ -35,31 +35,31 @@ Feature: person
     #Update person should success
     Given request { id: '#(personId)', lastName: 'Jacket', middleName: 'John', firstName: 'Robin', idCardNumber: '0987654321', idCardType: 'NATIONAL_IDENTITY_CARD', type: 'CLIENT' }
     And header Accept = 'application/json'
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method PUT
     Then status 200
 
     #Select person should success
     Given path personId
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method GET
     Then status 200
     And match response == { id: #(personId), lastName: 'Jacket', middleName: 'John', firstName: 'Robin', idCardNumber: '0987654321', idCardType: #present, type: #present }
 
     #Delete person should success
     Given path personId
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method DELETE
     Then status 200
 
     #Select person should fail
     Given path personId
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method GET
     Then status 404
 
     #Select many persons should fail
     Given params { offset: 1, pageNumber: 1, pageSize: 5 }
-	And header Authorization = 'Bearer ' + accessToken
+    And header Authorization = 'Bearer ' + accessToken
     When method GET
     Then status 404
