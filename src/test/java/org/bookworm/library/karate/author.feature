@@ -21,7 +21,7 @@ Feature: author
 	And header Authorization = 'Bearer ' + accessToken
     And method POST
     And header Accept = 'application/json'
-    Then status 200
+    Then status 201
     And match response == { id: #notnull, lastName: 'Clarke', firstName: 'Arthur', displayName: 'Arthur C. Clarke', comment:null}
     And def authorId = response.id
 
