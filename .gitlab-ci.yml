@@ -42,7 +42,7 @@ test-job:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
-      - build
+      - build\libs\bookworm-backend-0.0.1-SNAPSHOT.jar
       - .gradle
   artifacts:
     paths:
