@@ -1,5 +1,5 @@
 default:
-  image: gradle:jdk11-alpine
+  image: gradle:6-jdk11-alpine
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
