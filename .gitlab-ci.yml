@@ -22,7 +22,7 @@ build-job:
     - gradle bootJar --warning-mode all
   artifacts:
     paths:
-      - build\libs\bookworm-backend-0.0.1-SNAPSHOT.jar
+      - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
     expire_in: 1 hour
 
 test-job:
