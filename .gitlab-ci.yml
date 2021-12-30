@@ -19,30 +19,23 @@ stages:
 build-job:
   stage: build
   script:
-    - gradle --build-cache  bootJar --warning-mode all
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
+    - gradle bootJar --warning-mode all
+  artifacts:
     paths:
       - build\libs\bookworm-backend-0.0.1-SNAPSHOT.jar
-      - .gradle
+    expire_in: 1 hour
 
 test-job:
   stage: test
+  image: docker/compose:alpine-1.29.2
   script:
-    - gradle bootJar --warning-mode all
     - cd docker || { echo "Docker folder does not exist."; exit 1; }
     - ln ../build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
     - docker-compose up -d
     - cd .. && gradle check && cd docker
     - docker-compose down
     - unlink ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build\libs\bookworm-backend-0.0.1-SNAPSHOT.jar
-      - .gradle
   artifacts:
     paths:
       - build/karate-reports/*
+    expire_in: 1 hour
