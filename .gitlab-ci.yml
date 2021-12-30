@@ -1,0 +1,49 @@
+default:
+  image: gradle:jdk11-alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  script:
+    - ./gradle --build-cache  bootJar --warning-mode all
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build\libs\bookworm-backend-0.0.1-SNAPSHOT.jar
+      - .gradle
+
+test-job:
+  stage: test
+  script:
+    #    - ./gradle clean
+    #    - ./gradle bootJar --warning-mode all
+    - cd docker || { echo "Docker folder does not exist."; exit 1; }
+    - ln ../build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
+    - docker-compose up -d
+    - cd .. && ./gradle check && cd docker
+    - docker-compose down
+    - unlink ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+  artifacts:
+    paths:
+      - build/karate-reports/*
