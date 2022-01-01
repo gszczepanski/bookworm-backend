@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 5s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 5s # By default, scrape targets every 15 seconds.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'bookworm'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    metrics_path: /actuator/prometheus
+    oauth2:
+      client_id: 'bookworm_client'
+      client_secret: 'a0f7590c-a779-4695-95cc-9d608142864b'
+      token_url: 'http://bookworm_keycloak:8080/auth/realms/bookworm/protocol/openid-connect/token'
+      endpoint_params:
+        username: 'bookworm_john'
+        password: 'password'
+    static_configs:
+      - targets:
+          # On MacOS, replace localhost by host.docker.internal
+          - bookworm-backend:8080
