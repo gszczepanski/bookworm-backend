@@ -2,12 +2,22 @@ version: '3.1'
 
 services:
 
+  #  bookworm_redis:
+  #    container_name: bookworm-redis
+  #    image: redis:6.2.6-alpine
+  #    expose:
+  #      - 6379
+  #    ports:
+  #      - "6379:6379"
+  #    networks:
+  #      - bookworm_network
+
   bookworm_postgres:
-    container_name: bookworm_postgres
+    container_name: bookworm-postgres
     build:
-      context: postgres_pl
+      context: bookworm_postgres
       dockerfile: Dockerfile
-    image: postgres_pl:latest
+    image: bookworm_postgres:latest
     expose:
       - 5432
     ports:
@@ -16,18 +26,102 @@ services:
       POSTGRES_DB: bookworm_library
       POSTGRES_USER: bookworm_user
       POSTGRES_PASSWORD: xyzXYZxyz
+    volumes:
+      - ./bookworm_postgres/init:/docker-entrypoint-initdb.d
     networks:
-      - bookworm_backend
+      - bookworm_network
 
-  bookworm_backend:
-    container_name: bookworm_backend
+  bookworm_pgadmin:
+    container_name: bookworm-pgadmin
+    image: dpage/pgadmin4:6.2
     depends_on:
       - bookworm_postgres
-#    restart: on-failure
+    ports:
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: grzegorz@shire.org
+      PGADMIN_DEFAULT_PASSWORD: password
+    networks:
+      - bookworm_network
+
+  bookworm_keycloak:
+    container_name: bookworm-keycloak
+    image: jboss/keycloak:15.0.2
+    depends_on:
+      - bookworm_postgres
+    expose:
+      - 9080
+    ports:
+      - "9080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/realm-bookworm.json
+      - DB_VENDOR=postgres
+      - DB_ADDR=bookworm_postgres
+      - DB_DATABASE=bookworm_keycloak
+      - DB_USER=bookworm_keycloak_user
+      - DB_PASSWORD=bookworm_keycloak_p
+    volumes:
+      - ./keycloak/realm-bookworm.json:/tmp/realm-bookworm.json
+    command: [ "-Dkeycloak.profile.feature.upload_scripts=enabled" ]
+    networks:
+      - bookworm_network
+
+  #  # configuration 4 realm data export
+  #  bookworm_keycloak:
+  #    container_name: bookworm-keycloak
+  #    image: jboss/keycloak:15.0.2
+  #    ports:
+  #      - "9080:8080"
+  #    environment:
+  #      - KEYCLOAK_USER=admin
+  #      - KEYCLOAK_PASSWORD=admin
+  #      - DB_VENDOR=postgres
+  #      - DB_ADDR=bookworm_postgres
+  #      - DB_DATABASE=bookworm_keycloak
+  #      - DB_USER=bookworm_keycloak_user
+  #      - DB_PASSWORD=bookworm_keycloak_p
+  #    volumes:
+  #      - /tmp:/tmp
+  #    depends_on:
+  #      - bookworm_postgres
+  #    networks:
+  #      - bookworm_network
+
+  bookworm_prometheus:
+    container_name: bookworm-prometheus
+    image: bitnami/prometheus:2.31.1-debian-10-r29
+    depends_on:
+      - bookworm_backend
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+    networks:
+      - bookworm_network
+
+  bookworm_grafana:
+    container_name: bookworm-grafana
+    image: grafana/grafana:8.2.6
+    depends_on:
+      - bookworm_prometheus
+    ports:
+      - "3000:3000"
+    networks:
+      - bookworm_network
+
+  bookworm_backend:
+    container_name: bookworm-backend
+    depends_on:
+      # - bookworm_redis
+      - bookworm_postgres
+      - bookworm_keycloak
+    #    restart: on-failure
     build:
       context: bookworm_backend
       dockerfile: Dockerfile
-    image: bookworm_backend:latest
+    image: bookworm_backend:0.3.1
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     expose:
@@ -35,8 +129,8 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - bookworm_backend
+      - bookworm_network
 
 networks:
-  bookworm_backend:
+  bookworm_network:
     driver: bridge
