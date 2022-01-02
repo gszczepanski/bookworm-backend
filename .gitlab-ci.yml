@@ -3,6 +3,13 @@ default:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  CI_REGISTRY: $CI_REGISTRY
+  CI_DEPLOY_USER: $CI_DEPLOY_USER
+  CI_DEPLOY_PASSWORD: $CI_DEPLOY_PASSWORD
+  PROJECT_REGISTRY_PATH: $CI_REGISTRY_IMAGE
+  BACKEND_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_backend:latest
+  POSTGRES_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_postgres:latest
+
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -13,11 +20,12 @@ cache:
     - target/
 
 stages:
-  - build
-  - test
+  - build-java
+  - build-images
+  - test-java
 
-build-job:
-  stage: build
+build-java:
+  stage: build-java
   script:
     - gradle bootJar --warning-mode all
   artifacts:
@@ -25,16 +33,37 @@ build-job:
       - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
     expire_in: 1 hour
 
-test-job:
-  stage: test
+build-backend-image:
+  stage: build-images
+  script:
+    - ln ./build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./docker/bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
+    - cd docker/bookworm_backend
+    - docker build -t bookworm_backend .
+    - docker tag bookworm_backend $BACKEND_IMAGE_PATH
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker push $BACKEND_IMAGE_PATH
+
+build-postgres-image:
+  stage: build-images
+  script:
+    - cd docker/bookworm_postgres
+    - docker build -t bookworm_postgres .
+    - docker tag bookworm_postgres $POSTGRES_IMAGE_PATH
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker push $POSTGRES_IMAGE_PATH
+
+test-java:
+  stage: test-java
   image: docker/compose:alpine-1.29.2
   script:
-    - cd docker || { echo "Docker folder does not exist."; exit 1; }
-    - ln ../build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
-    - docker-compose up -d
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker pull $BACKEND_IMAGE_PATH
+    - docker tag $BACKEND_IMAGE_PATH bookworm_backend:latest
+    - docker pull $POSTGRES_IMAGE_PATH
+    - docker tag $POSTGRES_IMAGE_PATH bookworm_postgres:latest
+    - docker-compose up bookworm_postgres bookworm_keycloak bookworm_backend
     - cd .. && gradle check && cd docker
     - docker-compose down
-    - unlink ./bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
   artifacts:
     paths:
       - build/karate-reports/*
