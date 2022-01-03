@@ -1,31 +1,48 @@
 default:
-  image: gradle:6-jdk11-alpine
+  image: docker/compose:alpine-1.29.2
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   CI_REGISTRY: $CI_REGISTRY
   CI_DEPLOY_USER: $CI_DEPLOY_USER
   CI_DEPLOY_PASSWORD: $CI_DEPLOY_PASSWORD
+  CI_PROJECT_NAME: $CI_PROJECT_NAME
+  CI_COMMIT_REF_SLUG: $CI_COMMIT_REF_SLUG
   PROJECT_REGISTRY_PATH: $CI_REGISTRY_IMAGE
   BACKEND_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_backend:latest
   POSTGRES_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_postgres:latest
-
+  SONAR_TOKEN: $SONAR_TOKEN
+  SONAR_HOST_URL: $SONAR_HOST_URL
+  SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
+  GIT_DEPTH: 0
+  GRADLE_CLI_OPTS: "-Dorg.gradle.daemon=false --build-cache"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - .m2/repository/
-    - target/
+    - build/
+    - .gradle/
 
 stages:
+  - sonar
   - build-java
   - build-images
   - test-java
 
-build-java:
+code-analysis:
+  stage: sonar
+  image: gradle:6-jdk11-alpine
+  script:
+    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY $GRADLE_CLI_OPTS
+  allow_failure: true
+  only:
+    - devel
+
+build-backend:
   stage: build-java
+  image: gradle:6-jdk11-alpine
   script:
     - gradle bootJar --warning-mode all
   artifacts:
@@ -49,18 +66,18 @@ build-postgres-image:
     - cd docker/bookworm_postgres
     - docker build -t bookworm_postgres .
     - docker tag bookworm_postgres $POSTGRES_IMAGE_PATH
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker push $POSTGRES_IMAGE_PATH
 
-test-java:
+test-backend-api:
   stage: test-java
-  image: docker/compose:alpine-1.29.2
   script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker pull $BACKEND_IMAGE_PATH
     - docker tag $BACKEND_IMAGE_PATH bookworm_backend:latest
     - docker pull $POSTGRES_IMAGE_PATH
     - docker tag $POSTGRES_IMAGE_PATH bookworm_postgres:latest
+    - cd docker
     - docker-compose up bookworm_postgres bookworm_keycloak bookworm_backend
     - cd .. && gradle check && cd docker
     - docker-compose down
