@@ -78,7 +78,9 @@ test-backend-api:
     - docker pull $POSTGRES_IMAGE_PATH
     - docker tag $POSTGRES_IMAGE_PATH bookworm_postgres:latest
     - cd docker
-    - docker-compose up bookworm_postgres bookworm_keycloak bookworm_backend
+    - docker-compose up bookworm_postgres
+    - docker-compose up bookworm_keycloak
+    - docker-compose up bookworm_backend
     - cd .. && gradle check && cd docker
     - docker-compose down
   artifacts:
