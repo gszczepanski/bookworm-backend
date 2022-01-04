@@ -14,7 +14,6 @@ variables:
   SONAR_HOST_URL: $SONAR_HOST_URL
   SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
   GIT_DEPTH: 0
-  GRADLE_CLI_OPTS: "-Dorg.gradle.daemon=false --build-cache"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -29,7 +28,9 @@ stages:
   - sonar
   - build-java
   - build-images
+  - deploy
   - test-java
+  - clean
 
 code-analysis:
   stage: sonar
@@ -44,7 +45,7 @@ build-backend:
   stage: build-java
   image: gradle:6-jdk11-alpine
   script:
-    - gradle bootJar --warning-mode all
+    - gradle bootJar --build-cache --warning-mode all
   artifacts:
     paths:
       - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
@@ -69,21 +70,34 @@ build-postgres-image:
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker push $POSTGRES_IMAGE_PATH
 
-test-backend-api:
-  stage: test-java
+deploy-containers:
+  stage: deploy
   script:
+    - apk update && apk add bash
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker pull $BACKEND_IMAGE_PATH
     - docker tag $BACKEND_IMAGE_PATH bookworm_backend:latest
     - docker pull $POSTGRES_IMAGE_PATH
     - docker tag $POSTGRES_IMAGE_PATH bookworm_postgres:latest
-    - cd docker
-    - docker-compose up bookworm_postgres
-    - docker-compose up bookworm_keycloak
-    - docker-compose up bookworm_backend
-    - cd .. && gradle check && cd docker
-    - docker-compose down
+    - cd docker && chmod +x ./wait-for-it.sh
+    - docker-compose up -d bookworm_postgres && ./wait-for-it.sh --timeout=300 docker:5432
+    - docker-compose up -d bookworm_keycloak && ./wait-for-it.sh --timeout=300 docker:9080
+    - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 docker:8080
+
+test-backend-api:
+  stage: test-java
+  image: gradle:6-jdk11-alpine
+  script:
+    - gradle check
+  allow_failure: true
   artifacts:
     paths:
       - build/karate-reports/*
     expire_in: 1 hour
+
+clean-containers:
+  stage: clean
+  when: always
+  script:
+    - cd docker
+    - docker-compose down --remove-orphans
