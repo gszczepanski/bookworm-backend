@@ -36,7 +36,7 @@ code-analysis:
   stage: sonar
   image: gradle:6-jdk11-alpine
   script:
-    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY $GRADLE_CLI_OPTS
+    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
   allow_failure: true
   only:
     - devel
