@@ -10,6 +10,7 @@ variables:
   PROJECT_REGISTRY_PATH: $CI_REGISTRY_IMAGE
   BACKEND_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_backend:latest
   POSTGRES_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_postgres:latest
+  BOOKWORM_HOST: $BOOKWORM_HOST
   SONAR_TOKEN: $SONAR_TOKEN
   SONAR_HOST_URL: $SONAR_HOST_URL
   SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
@@ -36,7 +37,8 @@ code-analysis:
   stage: sonar
   image: gradle:6-jdk11-alpine
   script:
-    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dorg.gradle.daemon=false
+    - apk update && apk add nodejs
+    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
   allow_failure: true
   only:
     - devel
@@ -80,16 +82,15 @@ deploy-containers:
     - docker pull $POSTGRES_IMAGE_PATH
     - docker tag $POSTGRES_IMAGE_PATH bookworm_postgres:latest
     - cd docker && chmod +x ./wait-for-it.sh
-    - docker-compose up -d bookworm_postgres && ./wait-for-it.sh --timeout=300 docker:5432
-    - docker-compose up -d bookworm_keycloak && ./wait-for-it.sh --timeout=300 docker:9080
-    - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 docker:8080
+    - docker-compose up -d bookworm_postgres && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:5432
+    - docker-compose up -d bookworm_keycloak && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:9080
+    - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:8080
 
 test-backend-api:
   stage: test-java
   image: gradle:6-jdk11-alpine
   script:
-    - gradle check
-  allow_failure: true
+    - gradle check -Dkarate.env=test
   artifacts:
     paths:
       - build/karate-reports/*
