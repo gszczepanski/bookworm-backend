@@ -8,6 +8,7 @@ plugins {
     id 'net.ltgt.apt' version '0.8'
     id "org.liquibase.gradle" version "2.1.0"
     id 'groovy'
+    id 'jacoco'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -77,6 +78,18 @@ bootJar {
     }
 }
 
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
 sourceSets {
     test {
         resources {
@@ -91,7 +104,10 @@ test {
     systemProperty "karate.options", System.properties.getProperty("karate.options")
     systemProperty "karate.env", System.properties.getProperty("karate.env")
     outputs.upToDateWhen { false }
+    finalizedBy jacocoTestReport
 }
+
+check.dependsOn jacocoTestCoverageVerification
 
 task karateDebug(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath

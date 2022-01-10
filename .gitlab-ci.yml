@@ -26,22 +26,12 @@ cache:
     - .gradle/
 
 stages:
-  - sonar
   - build-java
   - build-images
   - deploy
   - test-java
+  - sonar
   - clean
-
-code-analysis:
-  stage: sonar
-  image: gradle:6-jdk11-alpine
-  script:
-    - apk update && apk add nodejs
-    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
-  allow_failure: true
-  only:
-    - devel
 
 build-backend:
   stage: build-java
@@ -90,11 +80,22 @@ test-backend-api:
   stage: test-java
   image: gradle:6-jdk11-alpine
   script:
-    - gradle check -Dkarate.env=test
+    - gradle check
   artifacts:
     paths:
-      - build/karate-reports/*
+      - build/karate-reports/**
+      - build/reports/**
     expire_in: 1 hour
+
+code-analysis:
+  stage: sonar
+  image: gradle:6-jdk11-alpine
+  script:
+    - apk update && apk add nodejs
+    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+  allow_failure: true
+  only:
+    - devel
 
 clean-containers:
   stage: clean
