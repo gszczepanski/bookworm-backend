@@ -26,15 +26,13 @@ cache:
     - .gradle/
 
 stages:
-  - build-java
-  - build-images
+  - build
   - deploy
-  - test-java
-  - sonar
+  - test
   - clean
 
 build-backend:
-  stage: build-java
+  stage: build
   image: gradle:6-jdk11-alpine
   script:
     - gradle bootJar --build-cache --warning-mode all
@@ -44,7 +42,9 @@ build-backend:
     expire_in: 1 hour
 
 build-backend-image:
-  stage: build-images
+  stage: build
+  needs:
+    - job: build-backend
   script:
     - ln ./build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./docker/bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
     - cd docker/bookworm_backend
@@ -54,7 +54,9 @@ build-backend-image:
     - docker push $BACKEND_IMAGE_PATH
 
 build-postgres-image:
-  stage: build-images
+  stage: build
+  needs:
+    - job: build-backend
   script:
     - cd docker/bookworm_postgres
     - docker build -t bookworm_postgres .
@@ -64,6 +66,9 @@ build-postgres-image:
 
 deploy-containers:
   stage: deploy
+  needs:
+    - job: build-backend-image
+    - job: build-postgres-image
   script:
     - apk update && apk add bash
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
@@ -77,8 +82,10 @@ deploy-containers:
     - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:8080
 
 test-backend-api:
-  stage: test-java
+  stage: test
   image: gradle:6-jdk11-alpine
+  needs:
+    - job: deploy-containers
   script:
     - gradle check
   artifacts:
@@ -88,8 +95,11 @@ test-backend-api:
     expire_in: 1 hour
 
 code-analysis:
-  stage: sonar
+  stage: test
   image: gradle:6-jdk11-alpine
+  needs:
+    - job: test-backend-api
+      artifacts: true
   script:
     - apk update && apk add nodejs
     - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
@@ -99,6 +109,8 @@ code-analysis:
 
 clean-containers:
   stage: clean
+  needs:
+    - job: code-analysis
   when: always
   script:
     - cd docker
