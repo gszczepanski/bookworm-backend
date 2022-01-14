@@ -23,9 +23,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: bookworm_library
-      POSTGRES_USER: bookworm_user
-      POSTGRES_PASSWORD: xyzXYZxyz
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - ./bookworm_postgres/init:/docker-entrypoint-initdb.d
     networks:
@@ -39,8 +39,8 @@ services:
     ports:
       - "80:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: grzegorz@shire.org
-      PGADMIN_DEFAULT_PASSWORD: password
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     networks:
       - bookworm_network
 
@@ -54,38 +54,40 @@ services:
     ports:
       - "9080:8080"
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_IMPORT=/tmp/realm-bookworm.json
-      - DB_VENDOR=postgres
-      - DB_ADDR=bookworm_postgres
-      - DB_DATABASE=bookworm_keycloak
-      - DB_USER=bookworm_keycloak_user
-      - DB_PASSWORD=bookworm_keycloak_p
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KEYCLOAK_IMPORT=${KEYCLOAK_IMPORT}
+      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
+      - DB_ADDR=${KEYCLOAK_DB_ADDR}
+      - DB_DATABASE=${KEYCLOAK_DB_DATABASE}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
     volumes:
       - ./keycloak/realm-bookworm.json:/tmp/realm-bookworm.json
     command: [ "-Dkeycloak.profile.feature.upload_scripts=enabled" ]
     networks:
       - bookworm_network
 
-  #  # configuration 4 realm data export
+  # configuration 4 realm data export
   #  bookworm_keycloak:
   #    container_name: bookworm-keycloak
   #    image: jboss/keycloak:15.0.2
+  #    depends_on:
+  #      - bookworm_postgres
+  #    expose:
+  #      - 9080
   #    ports:
   #      - "9080:8080"
   #    environment:
-  #      - KEYCLOAK_USER=admin
-  #      - KEYCLOAK_PASSWORD=admin
-  #      - DB_VENDOR=postgres
-  #      - DB_ADDR=bookworm_postgres
-  #      - DB_DATABASE=bookworm_keycloak
-  #      - DB_USER=bookworm_keycloak_user
-  #      - DB_PASSWORD=bookworm_keycloak_p
+  #      - KEYCLOAK_USER=${KEYCLOAK_USER}
+  #      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+  #      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
+  #      - DB_ADDR=${KEYCLOAK_DB_ADDR}
+  #      - DB_DATABASE=${KEYCLOAK_DB_DATABASE}
+  #      - DB_USER=${KEYCLOAK_DB_USER}
+  #      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
   #    volumes:
   #      - /tmp:/tmp
-  #    depends_on:
-  #      - bookworm_postgres
   #    networks:
   #      - bookworm_network
 
@@ -121,7 +123,8 @@ services:
     build:
       context: bookworm_backend
       dockerfile: Dockerfile
-    image: bookworm_backend:0.3.1
+    image: bookworm_backend:latest
+    #    image: bookworm_backend:0.3.1
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     expose:
