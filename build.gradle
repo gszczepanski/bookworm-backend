@@ -80,6 +80,9 @@ bootJar {
 
 sonarqube {
     properties {
+        property "sonar.projectKey", "gszczepanski_bookworm-backend"
+        property "sonar.organization", "gszczepanski"
+        property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
