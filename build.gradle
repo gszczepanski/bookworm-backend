@@ -1,5 +1,14 @@
 //noinspection GroovyAssignabilityCheck
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:6.5.0.1'
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.3.12.RELEASE'
     id 'java'
@@ -12,6 +21,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.owasp.dependencycheck'
 
 group = 'org.bookworm'
 version = '0.0.1-SNAPSHOT'
@@ -48,6 +58,7 @@ dependencies {
     implementation 'net.minidev:json-smart:2.4.7'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'org.codehaus.groovy:groovy:2.5.15'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     compileOnly 'org.liquibase:liquibase-gradle-plugin:2.0.4'
     compileOnly 'org.projectlombok:lombok:1.18.22'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -80,6 +91,9 @@ bootJar {
 
 sonarqube {
     properties {
+        property "sonar.projectKey", "org.bookworm:bookworm-backend"
+        property "sonar.projectName", "bookworm-backend"
+        property "sonar.coverage.exclusions", "src/main/java/org/bookworm/library/dto/**/*, src/main/java/org/bookworm/library/entities/**/*, src/main/java/org/bookworm/library/security/**/*, src/main/java/org/bookworm/library/*"
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
@@ -112,4 +126,20 @@ check.dependsOn jacocoTestCoverageVerification
 task karateDebug(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     main = 'com.intuit.karate.cli.Main'
+}
+
+task printSourceSetInformation() {
+
+    doLast {
+        sourceSets.each { srcSet ->
+            println "[" + srcSet.name + "]"
+            print "-->Source directories: " + srcSet.allJava.srcDirs + "\n"
+            print "-->Output directories: " + srcSet.output.classesDirs.files + "\n"
+//            print "-->Compile classpath:\n"
+//            srcSet.compileClasspath.files.each {
+//                print "  " + it.path + "\n"
+//            }
+            println ""
+        }
+    }
 }

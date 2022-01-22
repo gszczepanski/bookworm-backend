@@ -1,5 +1,5 @@
 default:
-  image: docker/compose:alpine-1.29.2
+  image: docker:20.10.12
 
 variables:
   CI_REGISTRY: $CI_REGISTRY
@@ -8,43 +8,53 @@ variables:
   CI_PROJECT_NAME: $CI_PROJECT_NAME
   CI_COMMIT_REF_SLUG: $CI_COMMIT_REF_SLUG
   PROJECT_REGISTRY_PATH: $CI_REGISTRY_IMAGE
-  BACKEND_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_backend:latest
-  POSTGRES_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_postgres:latest
+  BACKEND_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_backend:$CI_COMMIT_SHORT_SHA
+  POSTGRES_IMAGE_PATH: $PROJECT_REGISTRY_PATH/bookworm_postgres:$CI_COMMIT_SHORT_SHA
   BOOKWORM_HOST: $BOOKWORM_HOST
   SONAR_TOKEN: $SONAR_TOKEN
   SONAR_HOST_URL: $SONAR_HOST_URL
   SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
   GIT_DEPTH: 0
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:20.10.12-dind
+
+cache: &global_cache
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .gradle/**
+    - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
+    - build/classes/**
+    - build/jacoco/**
+  policy: pull-push
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - build/
-    - .gradle/
-
 stages:
-  - build
-  - deploy
+  - application
+  - infrastructure
   - test
-  - clean
+  - analyze
+#  - deploy
 
 build-backend:
-  stage: build
+  stage: application
   image: gradle:6-jdk11-alpine
+  cache:
+    <<: *global_cache
+    policy: push
   script:
     - gradle bootJar --build-cache --warning-mode all
-  artifacts:
-    paths:
-      - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
-    expire_in: 1 hour
 
 build-backend-image:
-  stage: build
+  stage: infrastructure
   needs:
     - job: build-backend
+  cache:
+    <<: *global_cache
+    policy: pull
   script:
     - ln ./build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar ./docker/bookworm_backend/bookworm-backend-0.0.1-SNAPSHOT.jar
     - cd docker/bookworm_backend
@@ -54,7 +64,7 @@ build-backend-image:
     - docker push $BACKEND_IMAGE_PATH
 
 build-postgres-image:
-  stage: build
+  stage: infrastructure
   needs:
     - job: build-backend
   script:
@@ -64,13 +74,20 @@ build-postgres-image:
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker push $POSTGRES_IMAGE_PATH
 
-deploy-containers:
-  stage: deploy
+test-backend-api:
+  stage: test
   needs:
     - job: build-backend-image
     - job: build-postgres-image
+  cache:
+    <<: *global_cache
+    policy: pull
   script:
-    - apk update && apk add bash
+    - docker info
+    - apk update && apk add --no-cache bash && apk add --no-cache sudo && apk add --no-cache curl
+    - sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - sudo chmod +x /usr/local/bin/docker-compose
+    - docker-compose --version
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $PROJECT_REGISTRY_PATH
     - docker pull $BACKEND_IMAGE_PATH
     - docker tag $BACKEND_IMAGE_PATH bookworm_backend:latest
@@ -80,38 +97,47 @@ deploy-containers:
     - docker-compose up -d bookworm_postgres && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:5432
     - docker-compose up -d bookworm_keycloak && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:9080
     - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:8080
-
-test-backend-api:
-  stage: test
-  image: gradle:6-jdk11-alpine
-  needs:
-    - job: deploy-containers
-  script:
-    - gradle check
+    - cd ..
+    - apk add --no-cache gradle
+    - gradle check -Dkarate.env=test
   artifacts:
+    untracked: true
     paths:
       - build/karate-reports/**
       - build/reports/**
     expire_in: 1 hour
 
-code-analysis:
-  stage: test
+sonar-analysis:
+  stage: analyze
   image: gradle:6-jdk11-alpine
   needs:
-    - job: test-backend-api
-      artifacts: true
+    - job: build-backend
+  cache:
+    <<: *global_cache
+    policy: pull
   script:
     - apk update && apk add nodejs
-    - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+    - gradle build jacocoTestReport sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
   allow_failure: true
   only:
     - devel
 
-clean-containers:
-  stage: clean
+owasp-check:
+  stage: analyze
+  image: gradle:6-jdk11-alpine
   needs:
-    - job: code-analysis
-  when: always
+    - job: build-backend
+  cache:
+    <<: *global_cache
+    policy: pull
   script:
-    - cd docker
-    - docker-compose down --remove-orphans
+    - gradle dependencyCheckAnalyze
+  allow_failure: true
+  when: manual
+  only:
+    - devel
+  artifacts:
+    untracked: true
+    paths:
+      - build/reports/dependency-check-report.html
+    expire_in: 1 hour
