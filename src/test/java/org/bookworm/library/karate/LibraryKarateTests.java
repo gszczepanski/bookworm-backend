@@ -2,11 +2,14 @@ package org.bookworm.library.karate;
 
 import com.intuit.karate.junit5.Karate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
-@SpringBootTest
-@SqlGroup({@Sql("classpath:make_tables_empty.sql")})
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+@Sql("classpath:make_tables_empty.sql")
 public class LibraryKarateTests {
 
     @Karate.Test
