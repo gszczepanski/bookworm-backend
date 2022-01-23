@@ -117,7 +117,7 @@ sonar-analysis:
     policy: pull
   script:
     - apk update && apk add nodejs
-    - gradle build jacocoTestReport sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+    - gradle build jacocoTestReport sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY --exclude-task test
   allow_failure: true
   only:
     - devel
