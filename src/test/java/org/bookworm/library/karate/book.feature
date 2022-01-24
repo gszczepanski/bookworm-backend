@@ -15,11 +15,6 @@ Feature: book
     * status 200
     * def accessToken = response.access_token
 
-#	Given url 'http://localhost:8080/signin'
-#	When method get
-#	Then status 200
-#	And header X-CSRF-TOKEN = response
-
     #Add publisher should success
     Given request { name: 'Milano' }
     And header Authorization = 'Bearer ' + accessToken
@@ -55,11 +50,11 @@ Feature: book
 #    And match response == { id: #notnull, registryNumber:'1', title: 'Red Mars', placeOfOrigin:'Warsaw', year:'2002', volume:'1', acquireDate: '2000-01-02', acquiringMethod: #present, acquiringEmployeeId:'28319c80-449d-11ec-81d3-0242ac130003', status:#present, publisher:#present, language:#present}
 
     #Update book should success
-#    Given request { id: '#(bookId)', title: 'Green Mars' }
-#	And header Authorization = 'Bearer ' + accessToken
-#    And header Accept = 'application/json'
-#    When method PATCH
-#    Then status 200
+    Given request { id: '#(bookId)', title: 'Green Mars' }
+    And header Authorization = 'Bearer ' + accessToken
+    And header Accept = 'application/json'
+    When method PATCH
+    Then status 200
 
     #Delete book should success
     Given path bookId
