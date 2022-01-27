@@ -3,7 +3,7 @@ function fn() {
   var env = karate.env; // get java system property 'karate.env'
   karate.log('karate.env system property was:', env);
   if (!env) {
-    env = 'dev'; // set a custom 'intelligent' default
+    env = 'test'; // set a custom 'intelligent' default
   }
   var config = { // base config JSON
     appId: 'bookworm_client',
