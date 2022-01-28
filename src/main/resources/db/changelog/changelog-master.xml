@@ -9,5 +9,7 @@
     <include file="2021/12/06-01-init-script.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/2021/12/06-02-drop-table-periodical.xml"/>
     <include file="db/changelog/2021/12/11-01-set-joint-publication-false.xml"/>
+    <include file="db/changelog/2022/01/17-01-publisher_id_seq.xml"/>
+    <include file="db/changelog/2022/01/24-01-middle_name.xml"/>
 
 </databaseChangeLog>
