@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd"
-		objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-	<changeSet id="1638824431026-1" author="grzegorz (generated)">
-		<dropForeignKeyConstraint baseTableName="periodical" constraintName="fk_periodical_on_name"/>
-	</changeSet>
-	<changeSet id="1638824431026-2" author="grzegorz (generated)">
-		<dropForeignKeyConstraint baseTableName="periodical" constraintName="fk_periodical_on_publisher"/>
-	</changeSet>
-	<changeSet id="1638824431026-4" author="grzegorz (generated)">
-		<dropTable cascadeConstraints="true" tableName="periodical"/>
-	</changeSet>
-	<changeSet id="1638824431026-5" author="grzegorz (generated)">
-		<dropTable cascadeConstraints="true" tableName="periodical_name"/>
-	</changeSet>
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1638824431026-1" author="grzegorz (generated)">
+        <dropForeignKeyConstraint baseTableName="periodical" constraintName="fk_periodical_on_name"/>
+    </changeSet>
+    <changeSet id="1638824431026-2" author="grzegorz (generated)">
+        <dropForeignKeyConstraint baseTableName="periodical" constraintName="fk_periodical_on_publisher"/>
+    </changeSet>
+    <changeSet id="1638824431026-4" author="grzegorz (generated)">
+        <dropTable cascadeConstraints="true" tableName="periodical"/>
+    </changeSet>
+    <changeSet id="1638824431026-5" author="grzegorz (generated)">
+        <dropTable cascadeConstraints="true" tableName="periodical_name"/>
+    </changeSet>
 
 </databaseChangeLog>
