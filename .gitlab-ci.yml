@@ -31,6 +31,7 @@ cache: &global_cache
     - build/libs/bookworm-backend-0.0.1-SNAPSHOT.jar
     - build/classes/**
     - build/jacoco/**
+    - build/reports/jacoco/**
   policy: pull-push
 
 before_script:
@@ -115,7 +116,7 @@ sonar-analysis:
   stage: analyze
   image: gradle:6-jdk11-alpine
   needs:
-    - job: build-backend
+    - job: test-backend-api
   cache:
     <<: *global_cache
     policy: pull
