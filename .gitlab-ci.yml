@@ -16,10 +16,10 @@ variables:
   SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
   GIT_DEPTH: 0
   DOCKER_TLS_CERTDIR: "/certs"
-  # for kubernetes executor
-  DOCKER_HOST: $DOCKER_HOST
-  DOCKER_TLS_VERIFY: 1
-  DOCKER_CERT_PATH: $DOCKER_TLS_CERTDIR/client
+  # for gitlab-runner kubernetes executor only
+  # DOCKER_HOST: tcp://docker:2376
+  # DOCKER_TLS_VERIFY: 1
+  # DOCKER_CERT_PATH: $DOCKER_TLS_CERTDIR/client
 
 services:
   - docker:20.10.12-dind
