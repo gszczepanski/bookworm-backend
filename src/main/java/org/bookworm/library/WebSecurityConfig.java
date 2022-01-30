@@ -3,11 +3,12 @@ package org.bookworm.library;
 import com.auth0.jwk.JwkProvider;
 import lombok.RequiredArgsConstructor;
 import org.bookworm.library.security.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,10 +21,15 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import java.util.Arrays;
+
 @Order(1)
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    Environment env;
 
     @Value("${keycloak.jwk}")
     private String jwkProviderUrl;
@@ -59,14 +65,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     //swagger-ui excluded from security if development profile enabled
     @Override
-    @Profile("dev")
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs",
-                "/configuration/ui",
-                "/swagger-resources/**",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**");
+        if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+            web.ignoring().antMatchers("/v2/api-docs",
+                    "/configuration/ui",
+                    "/swagger-resources/**",
+                    "/configuration/security",
+                    "/swagger-ui.html",
+                    "/webjars/**");
+        }
     }
 
     @ConditionalOnMissingBean
