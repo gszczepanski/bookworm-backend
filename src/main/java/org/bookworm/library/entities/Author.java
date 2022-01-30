@@ -23,27 +23,32 @@ import java.util.Objects;
 public class Author extends EntityWithUUID {
 
     @NotNull
-    @Size(max=50)
+    @Column(nullable = false)
+    @Size(max = 50)
     private String lastName;
 
     @NotNull
-    @Size(max=30)
+    @Column(nullable = false)
+    @Size(max = 30)
     private String firstName;
 
     @NotNull
-    @Size(max=150)
+    @Column(nullable = false)
+    @Size(max = 150)
     private String displayName;
 
-    @Size(max=1000)
+    @Size(max = 1000)
     private String comment;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "author_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
     @JsonIgnore
+    @ToString.Exclude
     private List<Book> books;
 
     public Author() {
-        List books = new ArrayList<>();
+        books = new ArrayList<>();
     }
 
     /**
@@ -62,6 +67,11 @@ public class Author extends EntityWithUUID {
             books.add(book);
             book.getAuthors().add(this);
         }
+    }
+
+    public void removeBook(Book book) {
+        this.books.remove(book);
+        book.getAuthors().remove(this);
     }
 
 }
