@@ -2,6 +2,7 @@ package org.bookworm.library.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bookworm.library.entities.groups.OnUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -32,6 +34,7 @@ public abstract class EntityWithUUID {
                     )
             }
     )
+    @NotNull(groups = OnUpdate.class)
     private UUID id;
 
     protected EntityWithUUID() {
