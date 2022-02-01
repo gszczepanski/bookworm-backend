@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bookworm.library.entities.groups.OnCreate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -24,69 +26,81 @@ import java.util.UUID;
 @Setter
 public class Book extends EntityWithUUID {
 
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private Integer registryNumber;
 
-    @NotNull
-    @Size(max=255)
+    @NotBlank(groups = OnCreate.class)
+    @Column(nullable = false)
+    @Size(max = 255)
     private String title;
 
-    @Size(max=100)
+    @Size(max = 100)
     private String placeOfOrigin;
 
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private Integer year;
 
-    @Size(max=20)
+    @Size(max = 20)
+    @Column(nullable = false)
     private String volume;
 
-    @NotNull
-    @Column(columnDefinition="boolean default true")
-    private Boolean jointPublication = false;
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean jointPublication;
 
-    @Size(max=100)
+    @Size(max = 100)
     private String seriesName;
 
-    @Size(max=255)
+    @Size(max = 255)
     private String comment;
 
-    @NotNull
-    @Column(updatable = false)
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false, updatable = false)
     private LocalDate acquireDate;
 
     @Enumerated(EnumType.ORDINAL)
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private BookAcquiringMethod acquiringMethod;
 
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private UUID acquiringEmployeeId;
 
-    @Size(max=20)
+    @Size(max = 20)
     private String invoiceSymbol;
 
     private BigDecimal price;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "book_author",
-            joinColumns = { @JoinColumn(name = "book_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "author_id", referencedColumnName = "id") })
+            joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "id")})
     @JsonIgnore
+    @ToString.Exclude
     private List<Author> authors;
 
     @Enumerated(EnumType.ORDINAL)
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private BookStatus status;
 
-    @ManyToOne(cascade = CascadeType.MERGE, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name="publisher_id")
+    @ManyToOne(targetEntity = Publisher.class, fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "publisher_id", insertable = false, updatable = false)
     private Publisher publisher;
 
+    @Column(nullable = false, name = "publisher_id")
+    private Long publisherId;
+
     @Enumerated(EnumType.ORDINAL)
-    @NotNull
+    @NotNull(groups = OnCreate.class)
+    @Column(nullable = false)
     private Language language;
 
     public Book() {
-        List authors = new ArrayList<>();
+        authors = new ArrayList<>();
     }
 
     /**
