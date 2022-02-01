@@ -12,17 +12,18 @@ import javax.validation.constraints.Size;
  * Created by Grzegorz on 2019/05/27
  */
 @Entity
+@SequenceGenerator(name = "seqid-gen", sequenceName = "publisher_id_seq", allocationSize = 1)
 @ToString
 @Getter
 @Setter
 public class Publisher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqid-gen")
     private Integer id;
 
     @NotNull
-    @Size(max=200)
-    @Column(unique=true)
+    @Column(nullable = false, unique = true)
+    @Size(max = 200)
     private String name;
 }
