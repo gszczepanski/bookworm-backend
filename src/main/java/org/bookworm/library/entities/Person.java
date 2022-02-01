@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,26 +21,30 @@ import javax.validation.constraints.Size;
 public class Person extends EntityWithUUID {
 
     @NotNull
-    @Size(max=50)
+    @Column(nullable = false)
+    @Size(max = 50)
     private String lastName;
 
-    @NotNull
-    @Size(max=50)
+    @Size(max = 50)
     private String middleName;
 
     @NotNull
-    @Size(max=30)
+    @Column(nullable = false)
+    @Size(max = 30)
     private String firstName;
 
     @NotNull
-    @Size(max=10)
+    @Column(nullable = false)
+    @Size(max = 10)
     private String idCardNumber;
 
     @Enumerated(EnumType.ORDINAL)
     @NotNull
+    @Column(nullable = false)
     private IdCardType idCardType;
 
     @Enumerated(EnumType.ORDINAL)
     @NotNull
+    @Column(nullable = false)
     private PersonType type;
 }
