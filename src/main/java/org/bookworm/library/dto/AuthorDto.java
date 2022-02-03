@@ -3,7 +3,7 @@ package org.bookworm.library.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -11,12 +11,11 @@ import java.util.UUID;
  */
 @NoArgsConstructor
 @Data
-public class AuthorDto {
+public class AuthorDto implements Serializable {
 
     private UUID id;
     private String lastName;
     private String firstName;
     private String displayName;
     private String comment;
-    private Set<BookDto> books;
 }
