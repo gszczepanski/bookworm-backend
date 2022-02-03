@@ -1,6 +1,5 @@
-package org.bookworm.library.mappers;
+package org.bookworm.library.dto;
 
-import org.bookworm.library.dto.PublisherDto;
 import org.bookworm.library.entities.Publisher;
 import org.mapstruct.Mapper;
 
