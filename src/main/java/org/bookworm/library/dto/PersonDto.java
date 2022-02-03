@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.bookworm.library.entities.IdCardType;
 import org.bookworm.library.entities.PersonType;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -12,7 +13,7 @@ import java.util.UUID;
  */
 @NoArgsConstructor
 @Data
-public class PersonDto {
+public class PersonDto implements Serializable {
 
     private UUID id;
     private String lastName;
