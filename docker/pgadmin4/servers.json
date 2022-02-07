@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "bookworm_library",
+      "Group": "docker",
+      "Port": 5432,
+      "Username": "bookworm_user",
+      "Host": "bookworm-postgres",
+      "SSLMode": "prefer",
+      "MaintenanceDB": "postgres"
+    }
+  }
+}
