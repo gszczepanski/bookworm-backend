@@ -37,7 +37,7 @@ services:
     depends_on:
       - bookworm_postgres
     ports:
-      - "80:80"
+      - "90:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
@@ -50,9 +50,9 @@ services:
     depends_on:
       - bookworm_postgres
     expose:
-      - 9080
+      - 8080
     ports:
-      - "9080:8080"
+      - "8080:8080"
     environment:
       - KEYCLOAK_USER=${KEYCLOAK_USER}
       - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
@@ -75,9 +75,9 @@ services:
   #    depends_on:
   #      - bookworm_postgres
   #    expose:
-  #      - 9080
+  #      - 8080
   #    ports:
-  #      - "9080:8080"
+  #      - "8080:8080"
   #    environment:
   #      - KEYCLOAK_USER=${KEYCLOAK_USER}
   #      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
@@ -128,9 +128,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     expose:
-      - 8080
+      - 8000
     ports:
-      - "8080:8080"
+      - "8000:8000"
     networks:
       - bookworm_network
 
