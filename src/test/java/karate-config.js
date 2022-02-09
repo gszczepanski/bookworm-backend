@@ -8,11 +8,11 @@ function fn() {
   var config = { // base config JSON
     appId: 'bookworm_client',
     appSecret: 'a0f7590c-a779-4695-95cc-9d608142864b',
-    tokenUrlBase: 'http://localhost:9080/auth/realms/bookworm/protocol/openid-connect/token',
-    authorUrlBase: 'http://localhost:8080/authors',
-    bookUrlBase: 'http://localhost:8080/books',
-    personUrlBase: 'http://localhost:8080/persons',
-    publisherUrlBase: 'http://localhost:8080/publishers',
+    tokenUrlBase: 'http://localhost:8080/auth/realms/bookworm/protocol/openid-connect/token',
+    authorUrlBase: 'http://localhost:8000/authors',
+    bookUrlBase: 'http://localhost:8000/books',
+    personUrlBase: 'http://localhost:8000/persons',
+    publisherUrlBase: 'http://localhost:8000/publishers',
     grantType: 'password',
     testUserName: 'bookworm_john',
     testUserPassword: 'password'
