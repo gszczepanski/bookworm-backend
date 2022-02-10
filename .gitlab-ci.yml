@@ -46,7 +46,7 @@ stages:
 
 build-backend:
   stage: application
-  image: gradle:7-jdk11-alpine
+  image: gradle:6-jdk11-alpine
   cache:
     <<: *global_cache
     policy: push
@@ -114,7 +114,7 @@ test-backend-api:
 
 sonar-analysis:
   stage: analyze
-  image: gradle:7-jdk11-alpine
+  image: gradle:6-jdk11-alpine
   needs:
     - job: test-backend-api
   cache:
@@ -129,7 +129,7 @@ sonar-analysis:
 
 owasp-check:
   stage: analyze
-  image: gradle:7-jdk11-alpine
+  image: gradle:6-jdk11-alpine
   needs:
     - job: build-backend
   cache:
