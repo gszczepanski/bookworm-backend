@@ -8,7 +8,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -46,10 +45,6 @@ public class Author extends EntityWithUUID {
     @JsonIgnore
     @ToString.Exclude
     private List<Book> books;
-
-    public Author() {
-        books = new ArrayList<>();
-    }
 
     /**
      * Optionally force client classes through your add/remove methods if mutual
