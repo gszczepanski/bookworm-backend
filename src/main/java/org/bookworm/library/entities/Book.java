@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -98,10 +97,6 @@ public class Book extends EntityWithUUID {
     @NotNull(groups = OnCreate.class)
     @Column(nullable = false)
     private Language language;
-
-    public Book() {
-        authors = new ArrayList<>();
-    }
 
     /**
      * Optionally force client classes through your add/remove methods if mutual
