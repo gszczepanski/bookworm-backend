@@ -738,7 +738,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "a0f7590c-a779-4695-95cc-9d608142864b",
       "redirectUris": [
-        "http://localhost:8080"
+        "http://localhost:8000"
       ],
       "webOrigins": [],
       "notBefore": 0,
