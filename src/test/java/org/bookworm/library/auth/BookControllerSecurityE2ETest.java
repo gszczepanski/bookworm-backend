@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,13 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Based on: https://github.com/wkrzywiec/keycloak-security-example/blob/main/backend/src/test/java/io/wkrzywiec/keycloak/backend/movie/MovieControllerSecurityE2ETest.java
  */
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Testcontainers
 @SqlGroup({@Sql("classpath:make_tables_empty.sql"), @Sql("classpath:test_data_4_book.sql")})
 class BookControllerSecurityE2ETest {
 
     @Container
-    private static GenericContainer keycloak = new GenericContainer(DockerImageName.parse("jboss/keycloak:15.0.2"))
+    private static GenericContainer keycloak = new GenericContainer(DockerImageName.parse("jboss/keycloak:15.1.0"))
             .withExposedPorts(8080)
             .withEnv("KEYCLOAK_USER", "admin")
             .withEnv("KEYCLOAK_PASSWORD", "admin")
