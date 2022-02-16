@@ -1,4 +1,4 @@
-package org.bookworm.library.integration;
+package org.bookworm.library.controllers;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -30,7 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-public class AuthorControllerIntegrationTest extends AbstractOAuth2Config {
+public class AuthorControllerTest extends AbstractOAuth2Config {
 
     @Value("${token.test.uri}")
     private String tokenURI;
@@ -170,7 +170,7 @@ public class AuthorControllerIntegrationTest extends AbstractOAuth2Config {
                 .then()
                 .extract()
                 .response();
-        
+
         assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
     }
 }
