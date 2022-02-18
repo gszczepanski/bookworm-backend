@@ -1,0 +1,212 @@
+package org.bookworm.library.controllers;
+
+import io.restassured.RestAssured;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.response.MockMvcResponse;
+import org.bookworm.library.AbstractOAuth2Config;
+import org.bookworm.library.BookwormRole;
+import org.bookworm.library.entities.PersonType;
+import org.json.simple.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.util.List;
+import java.util.Map;
+
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+public class PersonControllerTest extends AbstractOAuth2Config {
+
+    @Value("${token.test.uri}")
+    private String tokenURI;
+
+    @Value("${app.test.uri}")
+    private String testURI;
+
+    protected String personsPath;
+
+    private final String PERSON_UUID_1 = "c0a80015-7d8c-1d2f-817d-8c2e93df2202";
+    private final String PERSON_UUID_2 = "c0a80015-7d8c-1d2f-817d-8c2e93df2212";
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Before
+    public void initialiseRestAssuredMockMvcWebApplicationContext() {
+        RestAssuredMockMvc.webAppContextSetup(webApplicationContext);
+        accessToken = fetchAccessToken(tokenURI, BookwormRole.EDITOR);
+
+        RestAssured.baseURI = testURI;
+        personsPath = "/persons";
+    }
+
+    private JSONObject createPersonData() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("lastName", "Reagan");
+        jsonObject.put("middleName", "Wilson");
+        jsonObject.put("firstName", "Ronald");
+        jsonObject.put("idCardNumber", "123ABCDE4");
+        jsonObject.put("idCardType", 1);
+        jsonObject.put("type", 1);
+
+        return jsonObject;
+    }
+
+    private JSONObject createPersonDataForUpdate() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", PERSON_UUID_1);
+        jsonObject.put("lastName", "Wilson");
+        jsonObject.put("middleName", null);
+        jsonObject.put("firstName", "Woodrow");
+        jsonObject.put("idCardNumber", "345ASD8");
+        jsonObject.put("idCardType", 1);
+        jsonObject.put("type", 1);
+
+        return jsonObject;
+    }
+
+    @Test
+    @Sql("classpath:make_tables_empty.sql")
+    public void when_save_person_it_should_return_person() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .body(createPersonData())
+                .when()
+                .post(personsPath)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.CREATED.value()));
+        assertThat(response.jsonPath().getString("lastName"), equalTo("Reagan"));
+    }
+
+    @Test
+    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_person.sql"})
+    public void when_update_one_person_with_put_it_should_return_person() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .body(createPersonDataForUpdate())
+                .when()
+                .put(personsPath)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+        assertThat(response.jsonPath().getString("lastName"), equalTo("Wilson"));
+    }
+
+    @Test
+    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_person.sql"})
+    public void when_find_all_persons_it_should_return_persons_list() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .get(personsPath)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+        assertThat(response.jsonPath().getString("totalElements"), equalTo("2"));
+        List<Map<String, String>> persons = response.jsonPath().getList("content");
+        assertThat(persons.get(0).get("id"), anyOf(equalTo(PERSON_UUID_1), equalTo(PERSON_UUID_2)));
+        assertThat(persons.get(1).get("id"), anyOf(equalTo(PERSON_UUID_1), equalTo(PERSON_UUID_2)));
+    }
+
+    @Test
+    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_person.sql"})
+    public void when_find_one_person_by_id_it_should_return_person() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .get(personsPath + "/" + PERSON_UUID_1)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+        assertThat(response.jsonPath().getString("firstName"), equalTo("Ronald"));
+        assertThat(response.jsonPath().getString("lastName"), equalTo("Reagan"));
+        assertThat(response.jsonPath().getString("id"), equalTo(PERSON_UUID_1));
+    }
+
+    @Test
+    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_person.sql"})
+    public void when_delete_one_person_by_id_it_should_return_ok() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .delete(personsPath + "/" + PERSON_UUID_1)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+    }
+
+    @Test
+    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_person.sql"})
+    public void when_set_one_person_type_it_should_return_ok_and_type() {
+        MockMvcResponse response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .body(createPersonDataForUpdate())
+                .when()
+                .patch(personsPath + "/" + PERSON_UUID_1 + "/type/" + PersonType.DEPUTY_MANAGER)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+
+        response = given()
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .get(personsPath + "/" + PERSON_UUID_1)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode(), equalTo(HttpStatus.OK.value()));
+        assertThat(response.jsonPath().getString("type"), equalTo(PersonType.DEPUTY_MANAGER.toString()));
+    }
+}
