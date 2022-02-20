@@ -1,4 +1,4 @@
-package org.bookworm.library;
+package org.bookworm.library.utils;
 
 public enum BookwormRole {
     EDITOR("EDITOR"),

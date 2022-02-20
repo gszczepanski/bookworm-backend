@@ -1,5 +1,7 @@
 package org.bookworm.library;
 
+import org.bookworm.library.utils.BookwormRole;
+
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -7,7 +9,7 @@ import static io.restassured.RestAssured.given;
 public abstract class AbstractOAuth2Config {
 
     protected String accessToken;
-    
+
     protected String fetchAccessToken(String tokenURI, BookwormRole role) {
 
         String username = role.equals(BookwormRole.EDITOR) ? "bookworm_john" : "bookworm_jill";
