@@ -13,6 +13,8 @@ plugins {
     id 'org.springframework.boot' version '2.3.12.RELEASE'
     id 'java'
     id 'war'
+    id 'groovy'
+    id 'jacoco'
     id "org.sonarqube" version "3.3"
     id "org.liquibase.gradle" version "2.1.0"
     id 'groovy'
@@ -94,12 +96,21 @@ sonarqube {
         property "sonar.projectName", "bookworm-backend"
         property "sonar.coverage.exclusions", "src/main/java/org/bookworm/library/dto/**/*, src/main/java/org/bookworm/library/entities/**/*, src/main/java/org/bookworm/library/security/**/*, src/main/java/org/bookworm/library/*"
         property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.language", "java"
+        property "sonar.binaries", "build/classes"
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.jacoco.reportPath", "build/jacoco/test.exec"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/*"
+        property "sonar.verbose", "true"
+        property "sonar.log.level", "TRACE"
     }
 }
 
 jacocoTestReport {
     reports {
-        xml.required
+        xml.enabled true
+        html.enabled false
     }
 }
 
@@ -128,7 +139,6 @@ task karateDebug(type: JavaExec) {
 }
 
 task printSourceSetInformation() {
-
     doLast {
         sourceSets.each { srcSet ->
             println "[" + srcSet.name + "]"
