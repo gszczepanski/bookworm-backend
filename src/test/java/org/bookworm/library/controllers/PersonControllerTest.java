@@ -6,6 +6,8 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.bookworm.library.AbstractOAuth2Config;
 import org.bookworm.library.BookwormRole;
 import org.bookworm.library.entities.PersonType;
+import org.bookworm.library.utils.BookwormRole;
+import org.bookworm.library.utils.IntegrationTest;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package org.bookworm.library.auth;
 
 import org.bookworm.library.AbstractOAuth2Config;
-import org.bookworm.library.BookwormRole;
+import org.bookworm.library.utils.BookwormRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

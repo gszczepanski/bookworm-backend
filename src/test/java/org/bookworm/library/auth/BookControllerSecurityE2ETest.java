@@ -1,8 +1,8 @@
 package org.bookworm.library.auth;
 
 import com.auth0.jwk.JwkProvider;
-import org.bookworm.library.BookwormRole;
 import org.bookworm.library.security.KeycloakJwkProvider;
+import org.bookworm.library.utils.BookwormRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
