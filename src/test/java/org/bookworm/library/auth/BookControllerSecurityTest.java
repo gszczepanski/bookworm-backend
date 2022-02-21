@@ -13,6 +13,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,8 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@SqlGroup({@Sql("classpath:make_tables_empty.sql"), @Sql("classpath:test_data_4_book.sql")})
-class BookControllerSecurityTest extends AbstractOAuth2Config {
+@SqlGroup({
+        @Sql(scripts = "classpath:test_data_4_book.sql", executionPhase = BEFORE_TEST_METHOD),
+        @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+})
+public class BookControllerSecurityTest extends AbstractOAuth2Config {
 
     @Value("${token.test.uri}")
     private String tokenURI;
