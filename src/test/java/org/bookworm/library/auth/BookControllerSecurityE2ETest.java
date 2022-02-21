@@ -24,6 +24,8 @@ import org.testcontainers.utility.DockerImageName;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,8 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Testcontainers
-@SqlGroup({@Sql("classpath:make_tables_empty.sql"), @Sql("classpath:test_data_4_book.sql")})
-class BookControllerSecurityE2ETest {
+@SqlGroup({
+        @Sql(scripts = "classpath:test_data_4_book.sql", executionPhase = BEFORE_TEST_METHOD),
+        @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+})
+public class BookControllerSecurityE2ETest {
 
     @Container
     private static GenericContainer keycloak = new GenericContainer(DockerImageName.parse("jboss/keycloak:15.1.0"))
