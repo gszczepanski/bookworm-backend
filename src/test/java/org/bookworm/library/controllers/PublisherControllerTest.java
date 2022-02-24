@@ -5,8 +5,10 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.bookworm.library.AbstractOAuth2Config;
 import org.bookworm.library.utils.BookwormRole;
+import org.bookworm.library.utils.IntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -26,10 +29,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
+@Category(IntegrationTest.class)
 public class PublisherControllerTest extends AbstractOAuth2Config {
 
     @Value("${token.test.uri}")
@@ -56,8 +62,10 @@ public class PublisherControllerTest extends AbstractOAuth2Config {
     }
 
     @Test
-    @Sql("classpath:make_tables_empty.sql")
-    public void when_save_publisher_it_should_return_publisher() {
+    @SqlGroup({
+            @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+    })
+    public void save_publisher_and_return_publisher() {
         MockMvcResponse response = given()
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -75,8 +83,11 @@ public class PublisherControllerTest extends AbstractOAuth2Config {
     }
 
     @Test
-    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_publisher.sql"})
-    public void when_update_one_publisher_with_put_it_should_return_publisher() {
+    @SqlGroup({
+            @Sql(scripts = "classpath:test_data_4_publisher.sql", executionPhase = BEFORE_TEST_METHOD),
+            @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+    })
+    public void update_one_publisher_with_put_and_return_publisher() {
         MockMvcResponse response = given()
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -94,8 +105,11 @@ public class PublisherControllerTest extends AbstractOAuth2Config {
     }
 
     @Test
-    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_publisher.sql"})
-    public void when_find_all_publishers_it_should_return_publishers_list() {
+    @SqlGroup({
+            @Sql(scripts = "classpath:test_data_4_publisher.sql", executionPhase = BEFORE_TEST_METHOD),
+            @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+    })
+    public void find_all_publishers_and_return_publishers_list() {
         MockMvcResponse response = given()
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,8 +129,11 @@ public class PublisherControllerTest extends AbstractOAuth2Config {
     }
 
     @Test
-    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_publisher.sql"})
-    public void when_find_one_publisher_by_id_it_should_return_publisher() {
+    @SqlGroup({
+            @Sql(scripts = "classpath:test_data_4_publisher.sql", executionPhase = BEFORE_TEST_METHOD),
+            @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+    })
+    public void find_one_publisher_by_id_and_return_publisher() {
         MockMvcResponse response = given()
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -134,8 +151,11 @@ public class PublisherControllerTest extends AbstractOAuth2Config {
     }
 
     @Test
-    @Sql({"classpath:make_tables_empty.sql", "classpath:test_data_4_publisher.sql"})
-    public void when_delete_one_publisher_by_id_it_should_return_ok() {
+    @SqlGroup({
+            @Sql(scripts = "classpath:test_data_4_publisher.sql", executionPhase = BEFORE_TEST_METHOD),
+            @Sql(scripts = "classpath:make_tables_empty.sql", executionPhase = AFTER_TEST_METHOD)
+    })
+    public void delete_one_publisher_by_id_and_return_ok() {
         MockMvcResponse response = given()
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
