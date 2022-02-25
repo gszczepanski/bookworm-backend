@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+
+  bookworm_postgres:
+    container_name: bookworm-postgres
+    image: secregistry.azurecr.io/bookworm_postgres:latest
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - bw-config:/docker-entrypoint-initdb.d
+
+  bookworm_keycloak:
+    container_name: bookworm-keycloak
+    image: secregistry.azurecr.io/bookworm_keycloak:latest
+    depends_on:
+      - bookworm_postgres
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KEYCLOAK_IMPORT=${KEYCLOAK_IMPORT}
+      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
+      - DB_ADDR=${KEYCLOAK_DB_ADDR}
+      - DB_DATABASE=${KEYCLOAK_DB_DATABASE}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+
+  bookworm_backend:
+    container_name: bookworm-backend
+    image: secregistry.azurecr.io/bookworm_backend:latest
+    depends_on:
+      - bookworm_postgres
+      - bookworm_keycloak
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+
+volumes:
+  bw-config:
+    driver: azure_file
+    driver_opts:
+      share_name: bw-config
+      storage_account_name: bwsecstor
