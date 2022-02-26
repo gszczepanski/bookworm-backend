@@ -10,7 +10,7 @@ Go to [http://localhost:8000/swagger-ui.html](http://localhost:8000/swagger-ui.h
 For `run_prod.sh` and tests `mvn verify -DargLine="-Dkarate.env=test"` to run without errors You must put
 `127.0.0.1 docker` in `/etc/hosts`
 
-### Services are available on ports
+### Where to look for services
 
 Development environment:
 
@@ -32,9 +32,9 @@ Production environment (only bookworm-backend:8000 is exposed on docker host):
 
 ### Running with Spring Cloud
 
-Uncomment `id "org.springframework.cloud.contract" version "2.1.5.RELEASE"` in build.gradle to be able to run cloud version.
+Uncomment `id "org.springframework.cloud.contract" version "2.1.5.RELEASE"` in `build.gradle` to be able to run cloud version.
 `bootstrap.properties` ensures that app uses config server if one is available.
-When using config server add `cloud` to `dev`/`prod` profile to register with eureka (discovery service).
+When using config server add `cloud` to `dev`/`prod` profile to register with _eureka_ (discovery service).
 
     ./gradlew bootRun --args='--spring.profiles.active=dev,cloud'
 
