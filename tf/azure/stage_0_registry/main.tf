@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "it-sec" {
-  name     = "Security"
+  name     = "Bookworm"
   location = "westeurope"
 
   lifecycle {
