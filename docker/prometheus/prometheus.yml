@@ -27,4 +27,4 @@ scrape_configs:
     static_configs:
       - targets:
           # On MacOS, replace localhost by host.docker.internal
-          - bookworm-backend:8080
+          - bookworm-backend:8000
