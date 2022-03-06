@@ -10,7 +10,9 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.3.12.RELEASE'
+    id 'org.springframework.boot' version "2.3.12.RELEASE"
+    id "org.springframework.cloud.contract" version "2.1.5.RELEASE"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id 'java'
     id 'war'
     id 'groovy'
