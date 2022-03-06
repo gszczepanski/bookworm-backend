@@ -15,7 +15,6 @@ variables:
   SONAR_HOST_URL: $SONAR_HOST_URL
   SONAR_PROJECT_KEY: org.bookworm:$CI_PROJECT_NAME
   GIT_DEPTH: 0
-  GRADLE_VERSION: "6.8"
   DOCKER_TLS_CERTDIR: "/certs"
   # for gitlab-runner kubernetes executor only
   # DOCKER_HOST: tcp://docker:2376
@@ -23,7 +22,7 @@ variables:
   # DOCKER_CERT_PATH: $DOCKER_TLS_CERTDIR/client
 
 services:
-  - docker:20.10.12-dind-alpine3.15
+  - docker:20.10.12-dind-alpine3.14
 
 cache: &global_cache
   key: $CI_COMMIT_REF_SLUG
@@ -104,7 +103,6 @@ test-backend-api:
     - docker-compose up -d bookworm_keycloak && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:8080
     - docker-compose up -d bookworm_backend && ./wait-for-it.sh --timeout=300 $BOOKWORM_HOST:8000
     - cd ..
-    - export GRADLE_VERSION=$GRADLE_VERSION
     - apk add --no-cache openjdk11 && apk add --no-cache gradle
     - java --version
     - gradle bootJar check -Dkarate.env=test
