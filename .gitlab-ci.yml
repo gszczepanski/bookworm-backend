@@ -1,5 +1,5 @@
 default:
-  image: docker:20.10.12
+  image: docker:20.10.12-alpine3.14
 
 variables:
   CI_REGISTRY: $CI_REGISTRY
