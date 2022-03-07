@@ -1,2 +1,25 @@
-/.idea/
-/.jpb/
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.jpb
+
+### VS Code ###
+.vscode/
+
+### TerraForm ###
+tf/azure/stage_0_registry/IMPORT.md
+tf/azure/stage_0_registry/.terraform/
+tf/azure/stage_0_registry/.terraform.lock.hcl
+tf/azure/stage_1_db/.terraform/
+tf/azure/stage_1_db/.terraform.lock.hcl
+
+### trash
+unused/
