@@ -33,7 +33,7 @@ services:
 
   bookworm_pgadmin:
     container_name: bookworm-pgadmin
-    image: dpage/pgadmin4:6.2
+    image: dpage/pgadmin4:6
     depends_on:
       - bookworm_postgres
     ports:
@@ -41,6 +41,8 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
     networks:
       - bookworm_network
 
