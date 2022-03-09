@@ -14,10 +14,10 @@ services:
 
   bookworm_postgres:
     container_name: bookworm-postgres
+    image: bookworm_postgres:latest
     build:
       context: bookworm_postgres
       dockerfile: Dockerfile
-    image: bookworm_postgres:latest
     expose:
       - 5432
     ports:
@@ -28,6 +28,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - ./bookworm_postgres/init:/docker-entrypoint-initdb.d
+    #    command: [ "postgres", "-c", "log_statement=all" ]
     networks:
       - bookworm_network
 
