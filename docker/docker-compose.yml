@@ -49,7 +49,7 @@ services:
 
   bookworm_keycloak:
     container_name: bookworm-keycloak
-    image: jboss/keycloak:15.0.2
+    image: jboss/keycloak:15.1.0
     depends_on:
       - bookworm_postgres
     expose:
