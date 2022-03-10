@@ -118,18 +118,20 @@ services:
 
   bookworm_backend:
     container_name: bookworm-backend
+    image: bookworm_backend:latest
+    #    image: bookworm_backend:0.3.1
+    build:
+      context: bookworm_backend
+      dockerfile: Dockerfile
     depends_on:
       - bookworm_redis
       - bookworm_postgres
       - bookworm_keycloak
     #    restart: on-failure
-    build:
-      context: bookworm_backend
-      dockerfile: Dockerfile
-    image: bookworm_backend:latest
-    #    image: bookworm_backend:0.3.1
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - WAIT_FOR_HOST=${POSTGRES_HOST}
+      - WAIT_FOR_PORT=${POSTGRES_PORT}
     expose:
       - 8000
     ports:
