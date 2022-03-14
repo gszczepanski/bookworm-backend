@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-postgres-claim0
+  name: bookworm-postgres-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: { }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookworm-postgres-config
+  namespace: bookworm
+data:
+  postgres.database: "bookworm_library"
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bookworm-postgres-secrets
+  namespace: bookworm
+type: Opaque
+data:
+  postgres.username: Ym9va3dvcm1fdXNlcg==
+  postgres.password: eHl6WFlaeHl6
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-postgres
+  name: bookworm-postgres
+  namespace: bookworm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: bookworm-postgres
+  strategy: { }
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/bookworm_network: "true"
+        io.kompose.service: bookworm-postgres
+    spec:
+      initContainers:
+        - name: bookworm-config
+          image: bookworm_config:latest
+          imagePullPolicy: Never
+          command: [ "/bin/sh", "-c", "cp -R /bookworm/* /volume" ]
+          volumeMounts:
+            - name: bookworm-config-claim0
+              mountPath: /volume
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: bookworm-postgres-config
+                  key: postgres.database
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-postgres-secrets
+                  key: postgres.username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-postgres-secrets
+                  key: postgres.password
+          image: bookworm_postgres:latest
+          imagePullPolicy: Never
+          name: bookworm-postgres
+          ports:
+            - containerPort: 5432
+          resources: { }
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: bookworm-config-claim0
+      restartPolicy: Always
+      volumes:
+        - name: bookworm-config-claim0
+          persistentVolumeClaim:
+            claimName: bookworm-config-claim0
+status: { }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-postgres
+  name: bookworm-postgres
+  namespace: bookworm
+spec:
+  clusterIP: None
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: bookworm-postgres
+status:
+  loadBalancer: { }
