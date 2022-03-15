@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookworm-keycloak-config
+  namespace: bookworm
+data:
+  database.hostname: "bookworm-postgres"
+  database.name: "bookworm_keycloak"
+  database.vendor: "postgres"
+  import.path: "/tmp/realm-bookworm.json"
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bookworm-keycloak-secrets
+  namespace: bookworm
+type: Opaque
+data:
+  database.username: Ym9va3dvcm1fa2V5Y2xvYWtfdXNlcg==
+  database.password: Ym9va3dvcm1fa2V5Y2xvYWtfcA==
+  keycloak.username: YWRtaW4=
+  keycloak.password: YWRtaW4=
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-keycloak
+    io.kompose.network/bookworm_network: "true"
+  name: bookworm-keycloak
+  namespace: bookworm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: bookworm-keycloak
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/bookworm_network: "true"
+        io.kompose.service: bookworm-keycloak
+    spec:
+      containers:
+        - args:
+            - -Dkeycloak.profile.feature.upload_scripts=enabled
+          env:
+            - name: DB_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: bookworm-keycloak-config
+                  key: database.hostname
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: bookworm-keycloak-config
+                  key: database.name
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-keycloak-secrets
+                  key: database.password
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-keycloak-secrets
+                  key: database.username
+            - name: DB_VENDOR
+              valueFrom:
+                configMapKeyRef:
+                  name: bookworm-keycloak-config
+                  key: database.vendor
+            - name: KEYCLOAK_IMPORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bookworm-keycloak-config
+                  key: import.path
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-keycloak-secrets
+                  key: keycloak.password
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookworm-keycloak-secrets
+                  key: database.username
+          image: jboss/keycloak:15.1.0
+          name: bookworm-keycloak
+          ports:
+            - containerPort: 8080
+          resources: { }
+          volumeMounts:
+            - mountPath: /tmp
+              name: bookworm-config-claim0
+      restartPolicy: Always
+      volumes:
+        - name: bookworm-config-claim0
+          persistentVolumeClaim:
+            claimName: bookworm-config-claim0
+status: { }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-keycloak
+  name: bookworm-keycloak
+  namespace: bookworm
+spec:
+  clusterIP: None
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    io.kompose.service: bookworm-keycloak
+status:
+  loadBalancer: { }
