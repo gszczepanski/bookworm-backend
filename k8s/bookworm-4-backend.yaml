@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: bookworm-backend
+  name: bookworm-backend
+  namespace: bookworm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: bookworm-backend
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        io.kompose.network/bookworm_network: "true"
+        io.kompose.service: bookworm-backend
+    spec:
+      containers:
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+          image: bookworm_backend:latest
+          imagePullPolicy: Never
+          name: bookworm-backend
+          ports:
+            - containerPort: 8000
+          resources: { }
+      restartPolicy: Always
+status: { }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bookworm-backend
+  name: bookworm-backend
+  namespace: bookworm
+spec:
+  type: NodePort
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+      nodePort: 32080
+  selector:
+    io.kompose.service: bookworm-backend
+status:
+  loadBalancer: { }
