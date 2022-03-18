@@ -61,13 +61,13 @@ resource "azurerm_storage_share" "it-sec-share" {
 resource "azurerm_storage_share_file" "postgres-init-file" {
   name             = "keycloak-db-init.sql"
   storage_share_id = azurerm_storage_share.it-sec-share.id
-  source           = "../../init/keycloak-db-init.sql"
+  source           = "${var.config_files_path}init/keycloak-db-init.sql"
 }
 
 resource "azurerm_storage_share_file" "keycloak-init-file" {
   name             = "realm-bookworm.json"
   storage_share_id = azurerm_storage_share.it-sec-share.id
-  source           = "../../init/realm-bookworm.json"
+  source           = "${var.config_files_path}init/realm-bookworm.json"
 }
 
 resource "azurerm_container_group" "it-sec-container-group" {

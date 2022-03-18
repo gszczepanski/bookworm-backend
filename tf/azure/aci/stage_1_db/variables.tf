@@ -4,6 +4,11 @@ variable "spring_profile" {
 }
 
 
+variable "config_files_path" {
+  default = "../../../"
+}
+
+
 variable "postgres" {
   type = map
   default = {
