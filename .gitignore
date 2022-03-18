@@ -15,11 +15,11 @@ target/
 .vscode/
 
 ### TerraForm ###
-tf/azure/stage_0_registry/IMPORT.md
-tf/azure/stage_0_registry/.terraform/
-tf/azure/stage_0_registry/.terraform.lock.hcl
-tf/azure/stage_1_db/.terraform/
-tf/azure/stage_1_db/.terraform.lock.hcl
+tf/azure/aci/stage_0_registry/IMPORT.md
+tf/azure/aci/stage_0_registry/.terraform/
+tf/azure/aci/stage_0_registry/.terraform.lock.hcl
+tf/azure/aci/stage_1_db/.terraform/
+tf/azure/aci/stage_1_db/.terraform.lock.hcl
 
 ### trash
 unused/
