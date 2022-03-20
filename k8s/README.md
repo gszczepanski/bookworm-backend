@@ -13,20 +13,18 @@
     minikube image load bookworm_postgres:latest
     minikube image load bookworm_config:latest
 
-### secrets should be base64 encoded
-
-    echo -n "bookworm_user" | base64
-
 ### create services
 
     kubectl apply -f bookworm-1-base.yaml
     kubectl apply -f bookworm-2-postgres.yaml
     kubectl apply -f bookworm-3-keycloak.yaml
-    kubectl apply -f bookworm-4-backend.yaml
+    kubectl apply -f bookworm-4-redis.yaml
+    kubectl apply -f bookworm-5-backend.yaml
 
 ### delete services - execute in reversed order!
 
-    kubectl delete -f bookworm-4-backend.yaml
+    kubectl delete -f bookworm-5-backend.yaml
+    kubectl delete -f bookworm-4-redis.yaml
     kubectl delete -f bookworm-3-keycloak.yaml
     kubectl delete -f bookworm-2-postgres.yaml
     kubectl delete -f bookworm-1-base.yaml
@@ -55,6 +53,10 @@
     kubectl cp ./config/keycloak-db-init.sql bookworm/bookworm-postgres-789cb769d4-w8rnd:/
     kubectl cp ./config/realm-bookworm.json bookworm/bookworm-postgres-656bbf486c-cnkvl:/
 
-### swagger address - won't work in prod
+### secrets should be base64 encoded
+
+    echo -n "bookworm_user" | base64
+
+### swagger address - won't work in prod profile
 
     http://minikube-ip:nodePort/swagger-ui.html
