@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        io.kompose.network/bookworm_network: "true"
+        io.kompose.network/bookworm-network: "true"
         io.kompose.service: bookworm-backend
     spec:
       containers:

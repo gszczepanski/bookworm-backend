@@ -34,7 +34,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: bookworm-keycloak
-    io.kompose.network/bookworm_network: "true"
+    io.kompose.network/bookworm-network: "true"
   name: bookworm-keycloak
   namespace: bookworm
 spec:
@@ -51,7 +51,7 @@ spec:
         kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
-        io.kompose.network/bookworm_network: "true"
+        io.kompose.network/bookworm-network: "true"
         io.kompose.service: bookworm-keycloak
     spec:
       containers:

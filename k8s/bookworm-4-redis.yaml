@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: bookworm-redis
+  name: bookworm-redis
+  namespace: bookworm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: bookworm-redis
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        io.kompose.network/bookworm-network: "true"
+        io.kompose.service: bookworm-redis
+    spec:
+      containers:
+        - image: redis:6.2.6-alpine
+          imagePullPolicy: Never
+          name: bookworm-redis
+          ports:
+            - containerPort: 6379
+          resources: { }
+      restartPolicy: Always
+status: { }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: bookworm-redis
+  name: bookworm-redis
+  namespace: bookworm
+spec:
+  clusterIP: None
+  ports:
+    - name: "6379"
+      port: 6379
+      targetPort: 6379
+  selector:
+    io.kompose.service: bookworm-redis
+status:
+  loadBalancer: { }
