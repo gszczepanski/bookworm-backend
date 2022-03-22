@@ -3,16 +3,13 @@
 ### Java Spring Boot REST API
 
 This is a toy app I once made in my free time. Application is dockerized - use `run_prod.sh` to build and start
-containers.
+containers (must have `docker` and `docker-compose` installed).
 
-Go to [http://localhost:8000/swagger-ui.html](http://localhost:8000/swagger-ui.html) to see API documentation.
-
-For `run_prod.sh` and tests `mvn verify -DargLine="-Dkarate.env=test"` to run without errors You must put
-`127.0.0.1 docker` in `/etc/hosts`
+When running on development environment, go to [http://localhost:8000/swagger-ui.html](http://localhost:8000/swagger-ui.html) to see API documentation.
 
 ### Where to look for services
 
-Development environment:
+Development environment: start it with run_dev.sh and use gradle to start backend on localhost:8000 `./gradlew bootRun --args='--spring.profiles.active=dev'`
 
 - Bookworm Swagger UI: [http://localhost:8000/swagger-ui.html](http://localhost:8000/swagger-ui.html)
 - Keycloak: [http://localhost:8080/](http://localhost:8080/) - admin:admin
@@ -21,9 +18,9 @@ Development environment:
 - PgAdmin4: [http://localhost/](http://localhost/) - grzegorz@shire.org:password
 - Postgres: [tcp://localhost/5432](tcp://localhost/5432)
 
-Production environment (only bookworm-backend:8000 is exposed on docker host):
+Production environment: start it with `run_prod.sh`, only `bookworm-backend:8000` will be exposed on docker host (swagger-ui not available):
 
-- Bookworm Swagger UI: [http://bookworm-backend:8000/swagger-ui.html](http://bookworm-backend:8000/swagger-ui.html)
+- Bookworm Backend: [http://localhost:8000/](http://localhost:8000/)
 - Keycloak: [http://bookworm-keycloak:8080/](http://bookworm-keycloak:8080/)
 - Prometheus: [http://bookworm-prometheus:9090/](http://bookworm-prometheus:9090/)
 - Grafana: [http://bookworm-grafana:3000/](http://bookworm-grafana:3000/)
