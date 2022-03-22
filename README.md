@@ -38,16 +38,42 @@ When using config server add `cloud` to `dev`/`prod` profile to register with _e
 
     ./gradlew bootRun --args='--spring.profiles.active=dev,cloud'
 
-### Integration and E2E Tests
+### Tests included
 
-Karate tests run on  _Java 8_ only. Use `run_dev.sh` and `boot-run` to run tests on _dev_ with
+Use `run_dev.sh` and `./gradlew bootRun` to run tests on _dev_ with
 
-- maven: `mvn test -DargLine="-Dkarate.env=dev"`
+[- maven: `mvn test -DargLine="-Dkarate.env=dev"`]:maven-not-present
 - gradle: `./gradlew test -Dkarate.env=dev`
 
 Alternatively, you can run tests also with `run_prod.sh` on _prod_ (inside docker created network).
+To run tests on that environment put `127.0.0.1 docker` in `/etc/hosts` and use `mvn verify -DargLine="-Dkarate.env=test"`. 
 
-There are also properties for _test_ env for karate and java to use with Gitlab CI pipeline.
+There are also properties for _test_ env for karate and spring. Those properties are used with Gitlab CI pipeline.
+
+#### Unit tests with junit4, mockito and assertj
+
+Tests are located in `src/test/java/org/bookworm/library/services` folder
+
+#### Integration tests based on RestAssured library
+
+- REST Assured webpage: [https://rest-assured.io/](https://rest-assured.io/)
+- Tests are located in `src/test/java/org/bookworm/library/controllers` folder
+
+#### Integration REST API tests based on karate library
+
+- Karate webpage: [https://github.com/karatelabs/karate](https://github.com/karatelabs/karate)
+- Tests are located in `src/test/java/org/bookworm/library/karate` folder
+
+#### Integration security tests based on spock and groovy
+
+- Spock framework webpage: [https://spockframework.org/](https://spockframework.org/)
+- Groovy webpage: [https://groovy-lang.org/](https://groovy-lang.org/)
+- Tests are located in `src/test/groovy` folder
+
+#### E2E Tests based on Testcontainers
+
+- Testcontainers webpage: [https://www.testcontainers.org/](https://www.testcontainers.org/)
+- Tests are located in `src/test/java/org/bookworm/library/auth` folder
 
 ### How to export Realm config from Keycloak
 
