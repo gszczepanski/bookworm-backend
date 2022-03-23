@@ -2,6 +2,7 @@ package org.bookworm.library.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.bookworm.library.entities.groups.OnUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
+@SuperBuilder
 public abstract class EntityWithUUID {
 
     @Id
