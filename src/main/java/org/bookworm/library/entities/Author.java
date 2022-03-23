@@ -2,8 +2,10 @@ package org.bookworm.library.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +21,8 @@ import java.util.Objects;
 @ToString
 @Getter
 @Setter
+@NoArgsConstructor
+@SuperBuilder
 public class Author extends EntityWithUUID {
 
     @NotNull
