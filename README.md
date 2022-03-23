@@ -9,7 +9,9 @@ When running on development environment, go to [http://localhost:8000/swagger-ui
 
 ### Where to look for services
 
-Development environment: start it with run_dev.sh and use gradle to start backend on localhost:8000 `./gradlew bootRun --args='--spring.profiles.active=dev'`
+Development environment: start support services with run_dev.sh and use gradle to start backend on localhost:8000
+
+	./gradlew bootRun --args='--spring.profiles.active=dev'
 
 - Bookworm Swagger UI: [http://localhost:8000/swagger-ui.html](http://localhost:8000/swagger-ui.html)
 - Keycloak: [http://localhost:8080/](http://localhost:8080/) - admin:admin
