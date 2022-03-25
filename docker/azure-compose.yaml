@@ -14,7 +14,7 @@ services:
 
   bookworm_keycloak:
     container_name: bookworm-keycloak
-    image: secregistry.azurecr.io/bookworm_keycloak:latest
+    image: jboss/keycloak:15.1.0
     depends_on:
       - bookworm_postgres
     environment:
