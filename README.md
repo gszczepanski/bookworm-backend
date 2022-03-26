@@ -37,7 +37,17 @@ When using config server add `cloud` to `dev`/`prod` profile to register with _e
 
     ./gradlew bootRun --args='--spring.profiles.active=dev,cloud'
 
-### Tests included
+### SpringBoot dashboard for Grafana
+
+- add Prometheus on Graphana _Data Sources_ config page, service address when running with `prod` profile will be `http://bookworm-prometheus:9090/` 
+- import dashboard definition to see any statistics from application
+- run tests to create some traffic 
+
+Dashboard definition `Spring Boot Statistics` can be found on Grafana webpages:
+
+    https://grafana.com/grafana/dashboards/12464
+
+### Test examples included in project
 
 Use `run_dev.sh` and `./gradlew bootRun` to run tests on _dev_ with
 
