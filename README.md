@@ -61,26 +61,27 @@ There are also properties for _test_ env for karate and spring. Those properties
 
 #### Unit tests with junit4, mockito and assertj
 
-Tests are located in `src/test/java/org/bookworm/library/services` folder
+- Tests are located in `src/test/java/org/bookworm/library/services` folder
 
 #### Integration tests based on RestAssured library
 
-- REST Assured webpage: [https://rest-assured.io/](https://rest-assured.io/)
 - Tests are located in `src/test/java/org/bookworm/library/controllers` folder
+- REST Assured webpage: [https://rest-assured.io/](https://rest-assured.io/)
 
 #### Integration REST API tests based on karate library
 
-- Karate webpage: [https://github.com/karatelabs/karate](https://github.com/karatelabs/karate)
 - Tests are located in `src/test/java/org/bookworm/library/karate` folder
+- Karate webpage: [https://github.com/karatelabs/karate](https://github.com/karatelabs/karate)
 
 #### Integration security tests based on spock and groovy
 
+- Tests are located in `src/test/groovy` folder
 - Spock framework webpage: [https://spockframework.org/](https://spockframework.org/)
 - Groovy webpage: [https://groovy-lang.org/](https://groovy-lang.org/)
-- Tests are located in `src/test/groovy` folder
 
 #### E2E Tests based on Testcontainers
 
+- Tests are located in `src/test/java/org/bookworm/library/auth` folder
 - Testcontainers webpage: [https://www.testcontainers.org/](https://www.testcontainers.org/)
 - Tests are located in `src/test/java/org/bookworm/library/auth` folder
 
