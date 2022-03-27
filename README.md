@@ -102,12 +102,7 @@ Execute command:
 	-Dkeycloak.migration.usersExportStrategy=REALM_FILE \
 	-Dkeycloak.migration.file=/tmp/realm-bookworm.json
 
-Move `/tmp/realm-bookworm.json` to `docker/keycloak` and `src/test/resources`.
-
-### How to export database to Liquibase changelog file
-
-	liquidbase --url=jdbc:postgresql://localhost:5432/bookworm_library --username=bookworm_user \
-	--password=xyzXYZxyz --changeLogFile=output2.xml --diffTypes=data generateChangeLog
+Command will create `/tmp/realm-bookworm.json` config file. Move file to `docker/keycloak` and `src/test/resources`.
 
 ### SonarQube call with Gradle
 
