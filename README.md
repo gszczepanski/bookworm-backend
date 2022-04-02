@@ -109,10 +109,6 @@ Command will create `/tmp/realm-bookworm.json` config file. Move file to `docker
 	./gradlew sonarqube -Dsonar.projectKey=bookworm-backend \
 	-Dsonar.host.url=http://localhost:9000 -Dsonar.login=PUT-SONAR-TOKEN-HERE
 
-### SpringBoot dashboard for Grafana
-
-	https://grafana.com/grafana/dashboards/12464
-
 ### How to register local GitLab Runner with container support
 
 #### Docker-in-Docker with TLS enabled in the Docker executor method
