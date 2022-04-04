@@ -83,7 +83,18 @@ There are also properties for _test_ env for karate and spring. Those properties
 
 - Tests are located in `src/test/java/org/bookworm/library/auth` folder
 - Testcontainers webpage: [https://www.testcontainers.org/](https://www.testcontainers.org/)
-- Tests are located in `src/test/java/org/bookworm/library/auth` folder
+
+### Liquibase 
+
+Project use liquibase to manage database schema changes.
+Schema changelog files are located in `src/main/resources/db/changelog` folder.
+
+#### How to export database to Liquibase changelog file
+
+Install liquibase with appropriate package manager.
+
+	liquidbase --url=jdbc:postgresql://localhost:5432/bookworm_library --username=bookworm_user \
+	--password=xyzXYZxyz --changeLogFile=output2.xml --diffTypes=data generateChangeLog
 
 ### How to export Realm config from Keycloak
 
