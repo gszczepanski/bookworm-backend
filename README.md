@@ -96,6 +96,10 @@ Install liquibase with appropriate package manager.
 	liquidbase --url=jdbc:postgresql://localhost:5432/bookworm_library --username=bookworm_user \
 	--password=xyzXYZxyz --changeLogFile=output2.xml --diffTypes=data generateChangeLog
 
+### Kubernetes deployment config
+
+    Kubernetes deployment files are located in `k8s` folder.
+
 ### How to export Realm config from Keycloak
 
 Enable _configuration 4 realm data export_ config in `docker-compose.yml` and run `run_dev.sh` to start keycloak with
