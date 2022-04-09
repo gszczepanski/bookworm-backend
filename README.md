@@ -100,6 +100,10 @@ Install liquibase with appropriate package manager.
 
     Kubernetes deployment files are located in `k8s` folder.
 
+### Deployment to Azure Container Instances with local docker
+
+Read `docker/AZURE_COMPOSE.md` for recipe.
+
 ### How to export Realm config from Keycloak
 
 Enable _configuration 4 realm data export_ config in `docker-compose.yml` and run `run_dev.sh` to start keycloak with
