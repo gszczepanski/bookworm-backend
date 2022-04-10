@@ -84,7 +84,11 @@ There are also properties for _test_ env for karate and spring. Those properties
 - Tests are located in `src/test/java/org/bookworm/library/auth` folder
 - Testcontainers webpage: [https://www.testcontainers.org/](https://www.testcontainers.org/)
 
-### Liquibase 
+### Checkstyle
+
+`checkstyle.xml` config file located in main project folder is based on Google Checks (Feb 7 2022)
+
+### Liquibase
 
 Project use liquibase to manage database schema changes.
 Schema changelog files are located in `src/main/resources/db/changelog` folder.
