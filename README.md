@@ -1,4 +1,4 @@
-## BookWorm Library Web Application Backend [Work In Progress]
+## Bookworm Library Web Application Backend [Work In Progress]
 
 ### Java Spring Boot REST API
 
@@ -39,9 +39,9 @@ When using config server add `cloud` to `dev`/`prod` profile to register with _e
 
 ### SpringBoot dashboard for Grafana
 
-- add Prometheus on Graphana _Data Sources_ config page, service address when running with `prod` profile will be `http://bookworm-prometheus:9090/` 
+- add Prometheus on Graphana _Data Sources_ config page, service address when running with `prod` profile will be `http://bookworm-prometheus:9090/`
 - import dashboard definition to see any statistics from application
-- run tests to create some traffic 
+- run tests to create some traffic
 
 Dashboard definition `Spring Boot Statistics` can be found on Grafana webpages:
 
@@ -55,7 +55,7 @@ Use `run_dev.sh` and `./gradlew bootRun` to run tests on _dev_ with
 - gradle: `./gradlew test -Dkarate.env=dev`
 
 Alternatively, you can run tests also with `run_prod.sh` on _prod_ (inside docker created network).
-To run tests on that environment put `127.0.0.1 docker` in `/etc/hosts` and use `mvn verify -DargLine="-Dkarate.env=test"`. 
+To run tests on that environment put `127.0.0.1 docker` in `/etc/hosts` and use `mvn verify -DargLine="-Dkarate.env=test"`.
 
 There are also properties for _test_ env for karate and spring. Those properties are used with Gitlab CI pipeline.
 
