@@ -86,7 +86,8 @@ There are also properties for _test_ env for karate and spring. Those properties
 
 ### Checkstyle
 
-`checkstyle.xml` config file located in main project folder is based on Google Checks (Feb 7 2022)
+- `checkstyle.xml` config file located in main project folder is based on Google Checks (Feb 7 2022)
+- Source: [https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml](https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml)
 
 ### Liquibase
 
