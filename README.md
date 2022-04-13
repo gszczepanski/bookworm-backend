@@ -105,6 +105,12 @@ Install liquibase with appropriate package manager.
 
     Kubernetes deployment files are located in `k8s` folder.
 
+### Terraform deployment for Azure Cloud
+
+#### Deployment to Azure Container Instances
+
+    Deployment files are located in `tf/azure/aci` folder.
+
 ### Deployment to Azure Container Instances with local docker
 
 Read `docker/AZURE_COMPOSE.md` for recipe.
