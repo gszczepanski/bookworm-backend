@@ -109,7 +109,7 @@ Kubernetes deployment's files are located in `k8s` folder.
 
 #### Deployment to Azure Container Instances
 
-    Deployment files are located in `tf/azure/aci` folder.
+Deployment files are located in `tf/azure/aci` folder.
 
 ### Deployment to Azure Container Instances with local docker
 
