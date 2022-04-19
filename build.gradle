@@ -97,6 +97,7 @@ dependencies {
     testImplementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
     testImplementation "io.rest-assured:json-path:${restAssuredVersion}"
     testImplementation "io.rest-assured:xml-path:${restAssuredVersion}"
+    testImplementation "com.natpryce:make-it-easy:4.0.1"
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
 }
 
