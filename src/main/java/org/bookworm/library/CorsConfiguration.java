@@ -18,11 +18,13 @@ public class CorsConfiguration {
                         .allowedOrigins(env.getProperty("ws.cross.origin.address"))
                         .allowedMethods("GET, POST, PUT, DELETE, PATCH")
                         .allowedHeaders("*")
-//                        .allowedHeaders("Origin", "Accept", "X-Requested-With", "Content-Type",
-//                                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization")
+                        // .allowedHeaders("Origin", "Accept", "X-Requested-With", "Content-Type",
+                        //  "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization")
                         .exposedHeaders("*")
                         .allowCredentials(false).maxAge(3600);
             }
         };
     }
+
+
 }
