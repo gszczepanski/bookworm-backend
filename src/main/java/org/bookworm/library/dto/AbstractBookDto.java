@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.bookworm.library.entities.BookAcquiringMethod;
 import org.bookworm.library.entities.BookStatus;
 import org.bookworm.library.entities.Language;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @NoArgsConstructor
+@SuperBuilder
 @Getter
 @Setter
 @ToString
