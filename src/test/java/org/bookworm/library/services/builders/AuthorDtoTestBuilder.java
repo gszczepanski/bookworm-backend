@@ -4,6 +4,7 @@ import org.bookworm.library.dto.AuthorDto;
 
 import java.util.UUID;
 
+@Deprecated
 public final class AuthorDtoTestBuilder {
 
     private static final UUID AUTHOR_UUID = UUID.randomUUID();
@@ -11,7 +12,7 @@ public final class AuthorDtoTestBuilder {
 
     private static void initializeAutorDto() {
         String AUTHOR_FIRST_NAME = "Jan";
-        String AUTHOR_LAST_NAME = "Szydło";
+        String AUTHOR_LAST_NAME = "Kowalski";
 
         authorDto = new AuthorDto();
         authorDto.setId(AUTHOR_UUID);
