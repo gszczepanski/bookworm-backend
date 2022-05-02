@@ -5,6 +5,7 @@ import org.bookworm.library.dto.AuthorMapper;
 import org.bookworm.library.dto.AuthorMapperImpl;
 import org.bookworm.library.entities.Author;
 import org.bookworm.library.repositories.AuthorRepository;
+import org.bookworm.library.services.builders.AuthorDtoEasyTestBuilder;
 import org.bookworm.library.services.builders.AuthorDtoTestBuilder;
 import org.bookworm.library.utils.UnitTest;
 import org.junit.Before;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,11 +52,6 @@ public class AuthorServiceTest {
 
     private Page<Author> authorPage;
 
-
-    public AuthorServiceTest() {
-
-    }
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -65,7 +63,7 @@ public class AuthorServiceTest {
 
     @Test
     public void save_author_and_return_author() {
-        AuthorDto authorDto = AuthorDtoTestBuilder.standardItem();
+        AuthorDto authorDto = make(a(AuthorDtoEasyTestBuilder.AuthorDtoStandardItem));
 
         when(authorRepository.saveAndFlush(any(Author.class))).thenReturn(authorMapper.toAuthor(authorDto));
 
