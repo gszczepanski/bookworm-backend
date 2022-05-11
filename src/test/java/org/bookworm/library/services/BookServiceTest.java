@@ -1,8 +1,9 @@
 package org.bookworm.library.services;
 
-import org.bookworm.library.dto.AuthorMapperImpl;
+import org.bookworm.library.dto.BookForDisplayDto;
 import org.bookworm.library.dto.BookForModificationDto;
 import org.bookworm.library.dto.BookMapper;
+import org.bookworm.library.dto.BookMapperImpl;
 import org.bookworm.library.entities.Book;
 import org.bookworm.library.repositories.BookRepository;
 import org.bookworm.library.services.builders.BookDtoEasyTestBuilder;
@@ -18,9 +19,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
@@ -31,7 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {AuthorMapperImpl.class})
+@SpringBootTest(classes = {BookMapperImpl.class})
 @Category(UnitTest.class)
 public class BookServiceTest {
 
@@ -64,5 +69,16 @@ public class BookServiceTest {
         Optional<BookForModificationDto> authorDtoCreated = bookService.update(bookDto);
 
         assertThat(authorDtoCreated).isEqualTo(bookDto);
+    }
+
+    @Test
+    public void find_all_books_and_return_books_list() {
+        when(bookRepository.findAll(any(Pageable.class))).thenReturn(
+                new PageImpl(Arrays.asList(mock(Book.class), mock(Book.class))));
+
+        Page<BookForDisplayDto> bookDtos = bookService.findAll(PageRequest.of(0, 10));
+
+        assertThat(bookDtos).isInstanceOf(Page.class);
+        assertThat(bookDtos.getTotalElements()).isEqualTo(2);
     }
 }
