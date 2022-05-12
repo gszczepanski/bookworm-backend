@@ -27,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
@@ -80,5 +81,14 @@ public class BookServiceTest {
 
         assertThat(bookDtos).isInstanceOf(Page.class);
         assertThat(bookDtos.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    public void find_one_book_by_id_and_return_book() {
+        when(bookRepository.findById(any(UUID.class))).thenReturn(Optional.of(mock(Book.class)));
+
+        Optional<BookForDisplayDto> bookDtoOptional = bookService.findById(UUID.randomUUID());
+
+        assertThat(bookDtoOptional.get()).isInstanceOf(BookForDisplayDto.class);
     }
 }
