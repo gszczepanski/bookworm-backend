@@ -64,12 +64,12 @@ public class BookServiceTest {
     @Test
     public void save_book_and_return_book() {
         BookForModificationDto bookDto = make(a(BookDtoEasyTestBuilder.BookDtoStandardItem));
-
+        when(bookRepository.findById(any(UUID.class))).thenReturn(Optional.of(bookMapper.toBook(bookDto)));
         when(bookRepository.saveAndFlush(any(Book.class))).thenReturn(bookMapper.toBook(bookDto));
 
-        Optional<BookForModificationDto> authorDtoCreated = bookService.update(bookDto);
+        Optional<BookForModificationDto> bookDtoOptional = bookService.update(bookDto);
 
-        assertThat(authorDtoCreated).isEqualTo(bookDto);
+        assertThat(bookDtoOptional.get()).isEqualTo(bookDto);
     }
 
     @Test
