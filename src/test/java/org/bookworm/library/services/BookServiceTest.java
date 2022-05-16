@@ -33,8 +33,7 @@ import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {BookMapperImpl.class})
@@ -90,5 +89,15 @@ public class BookServiceTest {
         Optional<BookForDisplayDto> bookDtoOptional = bookService.findById(UUID.randomUUID());
 
         assertThat(bookDtoOptional.get()).isInstanceOf(BookForDisplayDto.class);
+    }
+
+    @Test
+    public void delete_one_author_by_id_and_return_ok() {
+        doNothing().when(bookRepository).deleteById(any(UUID.class));
+        UUID key = UUID.randomUUID();
+
+        bookRepository.deleteById(key);
+
+        verify(bookRepository).deleteById(key);
     }
 }
