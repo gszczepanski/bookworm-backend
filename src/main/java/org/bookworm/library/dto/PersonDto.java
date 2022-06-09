@@ -1,5 +1,6 @@
 package org.bookworm.library.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bookworm.library.entities.IdCardType;
@@ -12,6 +13,7 @@ import java.util.UUID;
  * Created by Grzegorz on 2020/05/25
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class PersonDto implements Serializable {
 
