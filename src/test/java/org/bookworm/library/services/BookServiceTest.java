@@ -92,7 +92,7 @@ public class BookServiceTest {
     }
 
     @Test
-    public void delete_one_author_by_id_and_return_ok() {
+    public void delete_one_book_by_id_and_return_ok() {
         doNothing().when(bookRepository).deleteById(any(UUID.class));
         UUID key = UUID.randomUUID();
 
