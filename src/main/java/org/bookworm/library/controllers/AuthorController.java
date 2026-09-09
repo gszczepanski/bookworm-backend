@@ -2,6 +2,7 @@ package org.bookworm.library.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bookworm.library.security.roles.AllowedRoles;
 import org.bookworm.library.dto.AuthorDto;
 import org.bookworm.library.services.AuthorService;
 import org.springframework.data.domain.Page;
@@ -26,21 +27,21 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<AuthorDto> insert(@RequestBody AuthorDto authorDto) {
         log.info("Inserting author {}", authorDto);
         return new ResponseEntity<>(authorService.save(authorDto), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<AuthorDto> update(@RequestBody AuthorDto authorDto) {
         log.info("Updating author {}", authorDto);
         return new ResponseEntity<>(authorService.save(authorDto), HttpStatus.OK);
     }
 
     @GetMapping(value = "")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<Page<AuthorDto>> findAll(Pageable pageable) {
         log.info("Find all authors for {}", pageable);
         Page<AuthorDto> authorDtos = authorService.findAll(pageable);
@@ -52,7 +53,7 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/{id}")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<AuthorDto> findById(@PathVariable(value = "id") UUID id) {
         log.info("Searching for author with id {}", id);
         Optional<AuthorDto> authorDtoOptional = authorService.findById(id);
@@ -64,7 +65,7 @@ public class AuthorController {
     }
 
     @DeleteMapping(value = "/{id}")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<String> deleteById(@PathVariable(value = "id") UUID id) {
         log.info("Deleting author with id {}", id);
         authorService.deleteById(id);

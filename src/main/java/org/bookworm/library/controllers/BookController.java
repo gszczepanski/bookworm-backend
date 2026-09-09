@@ -2,6 +2,7 @@ package org.bookworm.library.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bookworm.library.security.roles.AllowedRoles;
 import org.bookworm.library.dto.AuthorDto;
 import org.bookworm.library.dto.BookForDisplayDto;
 import org.bookworm.library.dto.BookForModificationDto;
@@ -32,7 +33,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping(value = "")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<BookForModificationDto> insert(@RequestBody BookForModificationDto bookDto) {
         log.info("Inserting book {}", bookDto);
         BookForModificationDto book = bookService.create(bookDto);
@@ -40,7 +41,7 @@ public class BookController {
     }
 
     @PutMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<BookForModificationDto> update(@RequestBody BookForModificationDto bookDto) {
         log.info("Updating book {}", bookDto);
         Optional<BookForModificationDto> optionalBookForModificationDto = bookService.update(bookDto);
@@ -52,7 +53,7 @@ public class BookController {
     }
 
     @PatchMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<BookForModificationDto> updatePart(@RequestBody BookForModificationDto bookDto) {
         log.info("Updating partially book {}", bookDto);
         Optional<BookForModificationDto> optionalBookForModificationDto = bookService.updatePart(bookDto);
@@ -64,7 +65,7 @@ public class BookController {
     }
 
     @GetMapping(value = "")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<Page<BookForDisplayDto>> findAll(Pageable pageable) {
         log.info("Find all books for {}", pageable);
         Page<BookForDisplayDto> bookDtos = bookService.findAll(pageable);
@@ -80,7 +81,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/{id}")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<BookForDisplayDto> findById(@PathVariable(value = "id") UUID id) {
         log.info("Searching for book with id {}", id);
         Optional<BookForDisplayDto> bookDtoOptional = bookService.findById(id);
@@ -94,7 +95,7 @@ public class BookController {
     }
 
     @PatchMapping(value = "/{bookId}/author/{authorId}")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<String> addAuthorToBook(@PathVariable(value = "bookId") UUID bookId,
                                                   @PathVariable(value = "authorId") UUID authorId) {
         log.info("Adding author with id {} to book with id {}", authorId, bookId);
@@ -103,7 +104,7 @@ public class BookController {
     }
 
     @DeleteMapping(value = "/{id}")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<String> deleteById(@PathVariable(value = "id") UUID id) {
         log.info("Deleting book with id {}", id);
         bookService.deleteById(id);
@@ -111,7 +112,7 @@ public class BookController {
     }
 
     @PatchMapping(value = "/{id}/status/{status}")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<String> setStatus(@PathVariable(value = "status") BookStatus status,
                                             @PathVariable(value = "id") UUID id) {
         log.info("Setting status {} for book with id {}", status, id);

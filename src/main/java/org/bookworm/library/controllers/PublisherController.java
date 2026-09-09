@@ -2,6 +2,7 @@ package org.bookworm.library.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bookworm.library.security.roles.AllowedRoles;
 import org.bookworm.library.dto.PublisherDto;
 import org.bookworm.library.services.PublisherService;
 import org.springframework.data.domain.Page;
@@ -25,21 +26,21 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @PostMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<PublisherDto> insert(@RequestBody PublisherDto publisherDto) {
         log.info("Inserting publisher {}", publisherDto);
         return new ResponseEntity<>(publisherService.save(publisherDto), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<PublisherDto> update(@RequestBody PublisherDto publisherDto) {
         log.info("Updating publisher {}", publisherDto);
         return new ResponseEntity<>(publisherService.save(publisherDto), HttpStatus.OK);
     }
 
     @GetMapping(value = "")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<Page<PublisherDto>> findAll(Pageable pageable) {
         log.info("Find all publishers for {}", pageable);
         Page<PublisherDto> publisherDtos = publisherService.findAll(pageable);
@@ -51,7 +52,7 @@ public class PublisherController {
     }
 
     @GetMapping(value = "/{id}")
-    //@AllowedRoles("CLIENT")
+    @AllowedRoles("CLIENT")
     public ResponseEntity<PublisherDto> findById(@PathVariable(value = "id") Integer id) {
         log.info("Searching for publisher with id {}", id);
         Optional<PublisherDto> publisherDtoOptional = publisherService.findById(id);
@@ -63,7 +64,7 @@ public class PublisherController {
     }
 
     @DeleteMapping(value = "/{id}")
-    //@AllowedRoles("EDITOR")
+    @AllowedRoles("EDITOR")
     public ResponseEntity<String> deleteById(@PathVariable(value = "id") Integer id) {
         log.info("Deleting publisher with id {}", id);
         publisherService.deleteById(id);
